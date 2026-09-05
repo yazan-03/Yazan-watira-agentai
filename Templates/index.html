@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watira AI</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+</head>
+
+<body>
+
+<div class="app">
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">W</div>
+
+            <div>
+                <h2>Watira AI</h2>
+                <span>Knowledge Assistant</span>
+            </div>
+        </div>
+
+        <div class="sidebar-content">
+
+            <p class="section-label">KNOWLEDGE BASE</p>
+
+            <div class="knowledge-card">
+                <div class="status-dot"></div>
+
+                <div>
+                    <strong>5 Documents</strong>
+                    <span>Azure AI Search connected</span>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <span>Retrieval</span>
+                <strong>Hybrid Search</strong>
+            </div>
+
+            <div class="info-card">
+                <span>Model</span>
+                <strong>GPT-5.4-mini</strong>
+            </div>
+
+        </div>
+
+        <div class="sidebar-footer">
+            Grounded responses from your documents
+        </div>
+
+    </aside>
+
+
+    <main class="chat-area">
+
+        <header class="topbar">
+
+            <div>
+                <h1>Document Assistant</h1>
+                <p>Ask questions about your knowledge base</p>
+            </div>
+
+            <div class="online-status">
+                <span></span>
+                Online
+            </div>
+
+        </header>
+
+
+        <section id="chat-box" class="chat-box">
+
+            <div class="welcome">
+
+                <div class="welcome-icon">✦</div>
+
+                <h2>How can I help?</h2>
+
+                <p>
+                    Ask anything related to the documents
+                    stored in your knowledge base.
+                </p>
+
+                <div class="suggestions">
+
+                    <button
+                        onclick="useSuggestion(
+                        'How can I improve flexibility and reduce stress?'
+                        )"
+                    >
+                        Improve flexibility and reduce stress
+                    </button>
+
+                    <button
+                        onclick="useSuggestion(
+                        'What is deep learning?'
+                        )"
+                    >
+                        Explain deep learning
+                    </button>
+
+                    <button
+                        onclick="useSuggestion(
+                        'How do I prepare Italian coffee?'
+                        )"
+                    >
+                        Prepare Italian coffee
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <div class="input-wrapper">
+
+            <div class="input-box">
+
+                <textarea
+                    id="message-input"
+                    rows="1"
+                    placeholder="Ask Watira AI..."
+                ></textarea>
+
+                <button id="send-button" aria-label="Send">
+                    ➜
+                </button>
+
+            </div>
+
+            <p class="disclaimer">
+                Answers are generated only from retrieved document context.
+            </p>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
