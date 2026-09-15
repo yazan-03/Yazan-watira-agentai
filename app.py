@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify
-from rag_service import ask_agent
+from agent_service import run_agent
 
 
 app = Flask(__name__)
@@ -23,14 +23,15 @@ def chat():
 
     try:
 
-        result = ask_agent(question)
+        result = run_agent(question)
 
         return jsonify({
             "answer": result["answer"],
+            "tool_trace": result["tool_trace"],
             "sources": result["sources"],
             "ranking": result["ranking"]
         })
-
+        
     except Exception as e:
 
         print(f"Error: {e}")

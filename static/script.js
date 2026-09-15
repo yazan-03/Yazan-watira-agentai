@@ -64,6 +64,137 @@ function addTypingIndicator() {
     return row;
 }
 
+function addToolTrace(toolTrace) {
+    if (!toolTrace || toolTrace.length === 0) {
+        return;
+    }
+
+    const row = document.createElement("div");
+    row.className = "message-row bot";
+
+    const panel = document.createElement("div");
+    panel.className = "tool-trace-panel";
+
+    const title = document.createElement("div");
+    title.className = "tool-trace-title";
+    title.textContent = "Agent Tool Trace";
+
+    panel.appendChild(title);
+
+    toolTrace.forEach((item, index) => {
+        const toolItem = document.createElement("div");
+        toolItem.className = "tool-trace-item";
+
+        const header = document.createElement("div");
+        header.className = "tool-trace-header";
+
+        const left = document.createElement("div");
+        left.className = "tool-trace-header-left";
+
+        const number = document.createElement("div");
+        number.className = "tool-number";
+        number.textContent = index + 1;
+
+        const toolName = document.createElement("div");
+        toolName.className = "tool-name";
+        toolName.textContent = item.tool;
+
+        const arrow = document.createElement("div");
+        arrow.className = "tool-arrow";
+        arrow.textContent = "▼";
+
+        left.appendChild(number);
+        left.appendChild(toolName);
+
+        header.appendChild(left);
+        header.appendChild(arrow);
+
+        const details = document.createElement("div");
+        details.className = "tool-trace-details";
+        details.style.display = "none";
+
+        const argumentsTitle = document.createElement("div");
+        argumentsTitle.className = "tool-detail-label";
+        argumentsTitle.textContent = "Arguments";
+
+        const argumentsBox = document.createElement("div");
+        argumentsBox.className = "tool-arguments";
+
+        if (item.tool === "send_email") {
+            argumentsBox.textContent =
+                `Recipient: ${item.arguments.recipient}\n` +
+                `Subject: ${item.arguments.subject}\n\n` +
+                `Body:\n${item.arguments.body}`;
+        } else {
+            argumentsBox.textContent = JSON.stringify(
+                item.arguments,
+                null,
+                2
+            );
+        }
+
+        const resultTitle = document.createElement("div");
+        resultTitle.className = "tool-detail-label";
+        resultTitle.textContent = "Tool Result";
+
+        const resultBox = document.createElement("div");
+        resultBox.className = "tool-result";
+
+        if (item.tool === "rag_search" && Array.isArray(item.result)) {
+
+            resultBox.textContent = item.result
+                .map((result, i) =>
+                    `Result ${i + 1}\n` +
+                    `Source: ${result.source}\n` +
+                    `Chunk: ${result.id}\n` +
+                    `Hybrid Score: ${result.hybrid_score}\n` +
+                    `Semantic Score: ${result.semantic_score}\n\n` +
+                    `${result.content}`
+                )
+                .join("\n\n----------------------\n\n");
+        
+        } else if (item.tool === "send_email") {
+        
+            resultBox.textContent =
+                `✓ Email sent successfully\n` +
+                `Status: ${item.result.status}`;
+        
+        } else {
+        
+            resultBox.textContent = JSON.stringify(
+                item.result,
+                null,
+                2
+            );
+        }
+
+        details.appendChild(argumentsTitle);
+        details.appendChild(argumentsBox);
+        details.appendChild(resultTitle);
+        details.appendChild(resultBox);
+
+        header.addEventListener("click", () => {
+            const isOpen =
+                details.style.display === "block";
+
+            details.style.display =
+                isOpen ? "none" : "block";
+
+            arrow.textContent =
+                isOpen ? "▼" : "▲";
+        });
+
+        toolItem.appendChild(header);
+        toolItem.appendChild(details);
+
+        panel.appendChild(toolItem);
+    });
+
+    row.appendChild(panel);
+    chatBox.appendChild(row);
+
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
 
 function addRetrievalInfo(sources, ranking) {
 
@@ -272,18 +403,27 @@ async function sendMessage() {
 
 
         if (response.ok) {
-
             addMessage(
                 data.answer,
                 "bot"
             );
-
-            addRetrievalInfo(
-                data.sources,
-                data.ranking
+        
+            addToolTrace(
+                data.tool_trace
             );
+        
+            if (
+                data.sources &&
+                data.sources.length > 0
+            ) {
+                addRetrievalInfo(
+                    data.sources,
+                    data.ranking
+                );
+            }
+        }
 
-        } else {
+         else {
 
             addMessage(
                 data.error || "Something went wrong.",
