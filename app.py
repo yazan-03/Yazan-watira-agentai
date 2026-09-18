@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 from agent_service import run_agent
+from evaluate_rag import run_evaluation
 
 
 app = Flask(__name__)
@@ -31,7 +32,7 @@ def chat():
             "sources": result["sources"],
             "ranking": result["ranking"]
         })
-        
+
     except Exception as e:
 
         print(f"Error: {e}")
@@ -41,5 +42,18 @@ def chat():
         }), 500
 
 
+@app.route("/evaluate", methods=["POST"])
+def evaluate():
+    try:
+        results = run_evaluation()
+
+        return jsonify(results)
+
+    except Exception as e:
+        return jsonify({
+            "error": str(e)
+        }), 500
+
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True , use_reloader=False)

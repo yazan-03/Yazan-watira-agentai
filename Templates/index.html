@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Watira AI</title>
 
     <link
@@ -15,41 +17,86 @@
 
 <div class="app">
 
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+
     <aside class="sidebar">
 
         <div class="brand">
-            <div class="brand-icon">W</div>
+
+            <div class="brand-icon">
+                W
+            </div>
 
             <div>
                 <h2>Watira AI</h2>
                 <span>Knowledge Assistant</span>
             </div>
+
         </div>
+
 
         <div class="sidebar-content">
 
-            <p class="section-label">KNOWLEDGE BASE</p>
+            <p class="section-label">
+                KNOWLEDGE BASE
+            </p>
+
 
             <div class="knowledge-card">
+
                 <div class="status-dot"></div>
 
                 <div>
                     <strong>5 Documents</strong>
                     <span>Azure AI Search connected</span>
                 </div>
+
             </div>
+
 
             <div class="info-card">
                 <span>Retrieval</span>
                 <strong>Hybrid Search</strong>
             </div>
 
+
             <div class="info-card">
                 <span>Model</span>
                 <strong>GPT-5.4-mini</strong>
             </div>
 
+
+            <!-- RAG Evaluation Navigation -->
+
+            <div class="evaluation-nav">
+
+
+                <button
+                id="assistant-button"
+                class="evaluation-button"
+                >
+                <span>✦</span>
+                Document Assistant
+            </button>
+
+                <p class="section-label">
+                    EVALUATION
+                </p>
+
+                <button
+                    id="evaluation-button"
+                    class="evaluation-button"
+                >
+                    <span>◈</span>
+                    RAG Evaluation
+                </button>
+
+            </div>
+
         </div>
+
 
         <div class="sidebar-footer">
             Grounded responses from your documents
@@ -58,14 +105,27 @@
     </aside>
 
 
+    <!-- =========================
+         MAIN AREA
+    ========================== -->
+
     <main class="chat-area">
+
+
+        <!-- TOP BAR -->
 
         <header class="topbar">
 
             <div>
-                <h1>Document Assistant</h1>
-                <p>Ask questions about your knowledge base</p>
+                <h1 id="page-title">
+                    Document Assistant
+                </h1>
+
+                <p id="page-subtitle">
+                    Ask questions about your knowledge base
+                </p>
             </div>
+
 
             <div class="online-status">
                 <span></span>
@@ -75,40 +135,54 @@
         </header>
 
 
-        <section id="chat-box" class="chat-box">
+        <!-- =========================
+             CHAT VIEW
+        ========================== -->
+
+        <section
+            id="chat-box"
+            class="chat-box"
+        >
 
             <div class="welcome">
 
-                <div class="welcome-icon">✦</div>
+                <div class="welcome-icon">
+                    ✦
+                </div>
 
-                <h2>How can I help?</h2>
+                <h2>
+                    How can I help?
+                </h2>
 
                 <p>
                     Ask anything related to the documents
                     stored in your knowledge base.
                 </p>
 
+
                 <div class="suggestions">
 
                     <button
                         onclick="useSuggestion(
-                        'How can I improve flexibility and reduce stress?'
+                            'How can I improve flexibility and reduce stress?'
                         )"
                     >
                         Improve flexibility and reduce stress
                     </button>
 
+
                     <button
                         onclick="useSuggestion(
-                        'What is deep learning?'
+                            'What is deep learning?'
                         )"
                     >
                         Explain deep learning
                     </button>
 
+
                     <button
                         onclick="useSuggestion(
-                        'How do I prepare Italian coffee?'
+                            'How do I prepare Italian coffee?'
                         )"
                     >
                         Prepare Italian coffee
@@ -121,7 +195,12 @@
         </section>
 
 
-        <div class="input-wrapper">
+        <!-- CHAT INPUT -->
+
+        <div
+            id="chat-input-wrapper"
+            class="input-wrapper"
+        >
 
             <div class="input-box">
 
@@ -131,11 +210,16 @@
                     placeholder="Ask Watira AI..."
                 ></textarea>
 
-                <button id="send-button" aria-label="Send">
+
+                <button
+                    id="send-button"
+                    aria-label="Send"
+                >
                     ➜
                 </button>
 
             </div>
+
 
             <p class="disclaimer">
                 Answers are generated only from retrieved document context.
@@ -143,11 +227,143 @@
 
         </div>
 
+
+        <!-- =========================
+             RAG EVALUATION VIEW
+        ========================== -->
+
+        <section
+            id="evaluation-panel"
+            class="evaluation-panel"
+        >
+
+            <!-- Evaluation Header -->
+
+            <div class="evaluation-header">
+
+                <div>
+
+                    <h2>
+                        RAG Evaluation
+                    </h2>
+
+                    <p>
+                        Evaluate retrieval and response quality
+                        using the TruLens RAG Triad.
+                    </p>
+
+                </div>
+
+
+                <button id="run-evaluation-button">
+                    Run Evaluation
+                </button>
+
+            </div>
+
+
+            <!-- Metric Cards -->
+
+            <div class="metric-cards">
+
+
+                <div class="metric-card">
+
+                    <span>
+                        Context Relevance
+                    </span>
+
+                    <strong id="context-score">
+                        —
+                    </strong>
+
+                    <small>
+                        Question ↔ Retrieved Context
+                    </small>
+
+                </div>
+
+
+                <div class="metric-card">
+
+                    <span>
+                        Groundedness
+                    </span>
+
+                    <strong id="groundedness-score">
+                        —
+                    </strong>
+
+                    <small>
+                        Context ↔ Generated Answer
+                    </small>
+
+                </div>
+
+
+                <div class="metric-card">
+
+                    <span>
+                        Answer Relevance
+                    </span>
+
+                    <strong id="answer-score">
+                        —
+                    </strong>
+
+                    <small>
+                        Question ↔ Generated Answer
+                    </small>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- Evaluation Results -->
+
+            <div class="evaluation-results">
+
+                <div class="results-heading">
+
+                    <div>
+
+                        <h3>
+                            Test Cases
+                        </h3>
+
+                        <p>
+                            Detailed results for each evaluation query
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div id="evaluation-test-cases">
+
+                    <div class="evaluation-empty">
+                        Run the evaluation to view results.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
     </main>
 
 </div>
 
-<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+<script
+    src="{{ url_for('static', filename='script.js') }}"
+></script>
 
 </body>
+
 </html>

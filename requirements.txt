@@ -4,3 +4,5 @@ openai
 azure-search-documents
 azure-core
 python-docx
+trulens
+trulens-providers-openai
