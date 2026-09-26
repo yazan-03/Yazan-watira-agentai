@@ -1,0 +1,766 @@
+{
+    "summary": {
+        "total_test_cases": 8,
+        "average_precision_at_k": 0.5555555555555555,
+        "average_retrieval_recall": 1.0,
+        "average_context_relevance": 0.7912500000000001,
+        "average_answer_correctness": 0.8574999999999999,
+        "average_faithfulness": 0.9975,
+        "retrieval_failure_rate": 0.0,
+        "retrieval_failures": 0,
+        "answerable_test_cases": 6,
+        "query_rewriting_success_rate": 0.0,
+        "successful_rewrites": 0,
+        "queries_triggering_rewrite": 5,
+        "average_retrieval_attempts": 1.625,
+        "total_retrieval_attempts": 13,
+        "average_latency_seconds": 13.656266524994862
+    },
+    "results": [
+        {
+            "id": 1,
+            "type": "simple_factual",
+            "query": "What are the health benefits of yoga?",
+            "expected_information": "Yoga can improve flexibility and posture, reduce stress, support sleep, and improve body awareness.",
+            "strategy": "vector",
+            "retrieved_ids": [
+                "5_Introduction_to_Yoga-0",
+                "5_Introduction_to_Yoga-1",
+                "1_Moringa_Tea_Health_Guide-0"
+            ],
+            "relevant_ids": [
+                "5_Introduction_to_Yoga-0",
+                "5_Introduction_to_Yoga-1"
+            ],
+            "reranking_applied": true,
+            "before_reranking_ids": [
+                "5_Introduction_to_Yoga-0",
+                "5_Introduction_to_Yoga-1",
+                "1_Moringa_Tea_Health_Guide-0",
+                "1_Moringa_Tea_Health_Guide-1",
+                "1_Moringa_Tea_Health_Guide-2"
+            ],
+            "after_reranking_ids": [
+                "5_Introduction_to_Yoga-0",
+                "5_Introduction_to_Yoga-1",
+                "1_Moringa_Tea_Health_Guide-0"
+            ],
+            "before_reranking_chunks": [
+                {
+                    "id": "5_Introduction_to_Yoga-0",
+                    "source": "5_Introduction_to_Yoga.docx",
+                    "content": "INTRODUCTION TO YOGA\nFoundations of Mindful Movement\nWhat is Yoga?\nYoga is an ancient practice originating in India that unites physical movement, conscious breathing, and mental mindfulness to foster inner peace and physical wellness.\nCore Pillars of Practice\nAsana: Physical postures designed to build strength and flexibility.\nPranayama: Controlled breathing exercises to balance body energy.\nDhyana: Meditation for focus and mental clarity.\nIntroduction to Yoga — Simple Guide\tPage 1 of 5\nINTRODUCTION TO YOGA\nBasic Poses for Beginners\nEssential Yoga Poses\nKey foundational poses suitable for all fitness levels:\nIntroduction to Yoga — Simple Guide\tPage 2 of 5\nINTRODUCTION TO YOGA\nBreathing Techniques\nThe Power of Breath (Pranayama)\nConscious breathing calms the nervous system and improves mental focus during practice.\nIntroduction to Yoga — Simple Guide\tPage 3 of 5\nINTRODUCTION TO YOGA\nBenefits for Mind & Body\nHolistic Health Benefits\nRegular yoga practice delivers widespread physical and mental advantages:\nImproves joint flexibility and core posture balance.\nLowers cortisol levels and helps relieve daily stress.\nEnhances sleep quality and body awareness.",
+                    "search_score": 0.6837766,
+                    "reranker_score": null
+                },
+                {
+                    "id": "5_Introduction_to_Yoga-1",
+                    "source": "5_Introduction_to_Yoga.docx",
+                    "content": "Enhances sleep quality and body awareness.\nIntroduction to Yoga — Simple Guide\tPage 4 of 5\nINTRODUCTION TO YOGA\nTips for Starting Your Journey\nHow to Start at Home\nFind a quiet space with a non-slip yoga mat.\nStart with short 10-to-15-minute daily sessions.\nListen to your body and avoid forcing deep stretches.\nConclusion\nYoga is a personal journey, not a competition. Consistency and mindful presence are all you need to reap lifelong benefits.\nIntroduction to Yoga — Simple Guide\tPage 5 of 5",
+                    "search_score": 0.6760442,
+                    "reranker_score": null
+                },
+                {
+                    "id": "1_Moringa_Tea_Health_Guide-0",
+                    "source": "1_Moringa_Tea_Health_Guide.docx",
+                    "content": "MORINGA TEA HEALTH GUIDE\nIntroduction & Origins\nWhat is Moringa Tea?\nMoringa tea is a nutrient-packed herbal infusion made from the dried leaves of the Moringa oleifera tree, native to parts of Asia and Africa. Often referred to as the \"miracle tree,\" Moringa has been used for centuries in traditional wellness practices.\nNutritional Profile\nMoringa leaves are exceptionally dense in essential vitamins, minerals, and antioxidants compared to common everyday vegetables.\nMORINGA TEA HEALTH GUIDE\nKey Health Benefits\nTop Health Benefits\nRegular consumption of moringa tea supports overall vitality and well-being through multiple key functions:\nRich in Antioxidants: Helps fight free radicals and oxidative stress.\nSupports Energy: Natural, caffeine-free boost without energy crashes.\nPromotes Heart Health: Helps maintain healthy cholesterol and blood pressure levels.\nHealth Comparisons\nMoringa Tea Health Guide — Simple Guide\tPag\nMORINGA TEA HEALTH GUIDE\nHow to Brew the Perfect Cup\nStep-by-Step Brewing Guide\nBrewing moringa tea is simple and quick. Follow these basic steps for maximum flavor and nutrient retention:\nBoil fresh, clean water to approximately 90°C (194°F).",
+                    "search_score": 0.5778964,
+                    "reranker_score": null
+                },
+                {
+                    "id": "1_Moringa_Tea_Health_Guide-1",
+                    "source": "1_Moringa_Tea_Health_Guide.docx",
+                    "content": "Boil fresh, clean water to approximately 90°C (194°F).\nPlace 1 to 2 teaspoons of dried moringa leaves into a tea infuser.\nPour hot water over the leaves and steep for 3 to 5 minutes.\nRemove the infuser, add natural sweeteners or lemon if desired, and enjoy!\nBrewing Tip: Avoid using boiling hot water directly on leaves to prevent scorching and destroying delicate vitamins.\nMORINGA TEA HEALTH GUIDE\nCulinary Uses & Recipes\nCreative Ways to Consume Moringa\nBeyond traditional tea infusions, moringa can be integrated into daily meals easily:\nIced Moringa Lemonade: Chill brewed moringa tea, blend with fresh lemon juice and honey.\nSmoothie Booster: Stir cooled moringa tea or leaf powder directly into green smoothies.\nSoups & Broths: Add steeped tea to vegetable broths for an extra nutrient infusion.\nMORINGA TEA HEALTH GUIDE\nSafety & Summary\nPrecautions & Recommended Dosage\nMoringa tea is generally safe for daily consumption. Drinking 1–2 cups per day is standard for most healthy adults. However, pregnant individuals or those taking blood-sugar medications should consult a doctor first.\nSummary",
+                    "search_score": 0.57059497,
+                    "reranker_score": null
+                },
+                {
+                    "id": "1_Moringa_Tea_Health_Guide-2",
+                    "source": "1_Moringa_Tea_Health_Guide.docx",
+                    "content": "Summary\nMoringa tea is a simple, refreshing, and highly nutritious caffeine-free herbal beverage that fits effortlessly into a healthy modern lifestyle.",
+                    "search_score": 0.55354786,
+                    "reranker_score": null
+                }
+            ],
+            "chunks": [
+                {
+                    "id": "5_Introduction_to_Yoga-0",
+                    "source": "5_Introduction_to_Yoga.docx",
+                    "content": "INTRODUCTION TO YOGA\nFoundations of Mindful Movement\nWhat is Yoga?\nYoga is an ancient practice originating in India that unites physical movement, conscious breathing, and mental mindfulness to foster inner peace and physical wellness.\nCore Pillars of Practice\nAsana: Physical postures designed to build strength and flexibility.\nPranayama: Controlled breathing exercises to balance body energy.\nDhyana: Meditation for focus and mental clarity.\nIntroduction to Yoga — Simple Guide\tPage 1 of 5\nINTRODUCTION TO YOGA\nBasic Poses for Beginners\nEssential Yoga Poses\nKey foundational poses suitable for all fitness levels:\nIntroduction to Yoga — Simple Guide\tPage 2 of 5\nINTRODUCTION TO YOGA\nBreathing Techniques\nThe Power of Breath (Pranayama)\nConscious breathing calms the nervous system and improves mental focus during practice.\nIntroduction to Yoga — Simple Guide\tPage 3 of 5\nINTRODUCTION TO YOGA\nBenefits for Mind & Body\nHolistic Health Benefits\nRegular yoga practice delivers widespread physical and mental advantages:\nImproves joint flexibility and core posture balance.\nLowers cortisol levels and helps relieve daily stress.\nEnhances sleep quality and body awareness.",
+                    "search_score": 0.6837766,
+                    "reranker_score": null
+                },
+                {
+                    "id": "5_Introduction_to_Yoga-1",
+                    "source": "5_Introduction_to_Yoga.docx",
+                    "content": "Enhances sleep quality and body awareness.\nIntroduction to Yoga — Simple Guide\tPage 4 of 5\nINTRODUCTION TO YOGA\nTips for Starting Your Journey\nHow to Start at Home\nFind a quiet space with a non-slip yoga mat.\nStart with short 10-to-15-minute daily sessions.\nListen to your body and avoid forcing deep stretches.\nConclusion\nYoga is a personal journey, not a competition. Consistency and mindful presence are all you need to reap lifelong benefits.\nIntroduction to Yoga — Simple Guide\tPage 5 of 5",
+                    "search_score": 0.6760442,
+                    "reranker_score": null
+                },
+                {
+                    "id": "1_Moringa_Tea_Health_Guide-0",
+                    "source": "1_Moringa_Tea_Health_Guide.docx",
+                    "content": "MORINGA TEA HEALTH GUIDE\nIntroduction & Origins\nWhat is Moringa Tea?\nMoringa tea is a nutrient-packed herbal infusion made from the dried leaves of the Moringa oleifera tree, native to parts of Asia and Africa. Often referred to as the \"miracle tree,\" Moringa has been used for centuries in traditional wellness practices.\nNutritional Profile\nMoringa leaves are exceptionally dense in essential vitamins, minerals, and antioxidants compared to common everyday vegetables.\nMORINGA TEA HEALTH GUIDE\nKey Health Benefits\nTop Health Benefits\nRegular consumption of moringa tea supports overall vitality and well-being through multiple key functions:\nRich in Antioxidants: Helps fight free radicals and oxidative stress.\nSupports Energy: Natural, caffeine-free boost without energy crashes.\nPromotes Heart Health: Helps maintain healthy cholesterol and blood pressure levels.\nHealth Comparisons\nMoringa Tea Health Guide — Simple Guide\tPag\nMORINGA TEA HEALTH GUIDE\nHow to Brew the Perfect Cup\nStep-by-Step Brewing Guide\nBrewing moringa tea is simple and quick. Follow these basic steps for maximum flavor and nutrient retention:\nBoil fresh, clean water to approximately 90°C (194°F).",
+                    "search_score": 0.5778964,
+                    "reranker_score": null
+                }
+            ],
+            "precision_at_k": 0.6666666666666666,
+            "retrieval_recall": 1.0,
+            "context_relevance": 0.98,
+            "answer_correctness": 0.9,
+            "faithfulness": 0.98,
+            "rewrite_triggered": false,
+            "rewritten_query": null,
+            "retrieval_attempts": 1,
+            "quality_sufficient": true,
+            "quality_reason": "The retrieved context directly lists several health benefits of yoga, including improved joint flexibility and core posture balance, lower cortisol and stress relief, better sleep quality, and increased body awareness. This is enough to answer the question.",
+            "latency_seconds": 10.386182300047949,
+            "answer": "Yoga’s health benefits, based on the provided context, include:\n\n- Improving joint flexibility and core posture balance\n- Lowering cortisol levels and helping relieve daily stress\n- Enhancing sleep quality and body awareness\n- Supporting mental focus and calm through conscious breathing\n- Fostering inner peace and physical wellness\n\nSource: `5_Introduction_to_Yoga.docx`",
+            "sources": [
+                "5_Introduction_to_Yoga.docx",
+                "1_Moringa_Tea_Health_Guide.docx"
+            ]
+        },
+        {
+            "id": 2,
+            "type": "ambiguous",
+            "query": "How should I prepare it at home?",
+            "expected_information": "The question is ambiguous because 'it' does not identify what the user wants to prepare. The system should not assume a specific item from the knowledge base.",
+            "strategy": "vector",
+            "retrieved_ids": [
+                "4_Italian_Coffee_Culture-0",
+                "1_Moringa_Tea_Health_Guide-1",
+                "5_Introduction_to_Yoga-1"
+            ],
+            "relevant_ids": [],
+            "reranking_applied": true,
+            "before_reranking_ids": [
+                "3_Beginners_Guide_to_Gardening-0",
+                "3_Beginners_Guide_to_Gardening-1",
+                "1_Moringa_Tea_Health_Guide-1",
+                "4_Italian_Coffee_Culture-0",
+                "5_Introduction_to_Yoga-1"
+            ],
+            "after_reranking_ids": [
+                "4_Italian_Coffee_Culture-0",
+                "1_Moringa_Tea_Health_Guide-1",
+                "5_Introduction_to_Yoga-1"
+            ],
+            "before_reranking_chunks": [
+                {
+                    "id": "3_Beginners_Guide_to_Gardening-0",
+                    "source": "3_Beginners_Guide_to_Gardening.docx",
+                    "content": "BEGINNER GARDENING GUIDE\nGetting Started with Gardening\nWelcome to Gardening\nGardening is a rewarding hobby that connects you with nature while producing fresh flowers, herbs, and vegetables. Getting started requires just a few basic elements and patience.\nEssential Gardening Tools\nHand Trowel: For digging small holes and planting seedlings.\nWatering Can: Gentle moisture application for young plants.\nPruning Shears: Trimming dead leaves and harvesting produce.\nBeginner Gardening Guide — Simple Guide\tPage 1 of 5\nBEGINNER GARDENING GUIDE\nSoil & Sun Essentials\nSunlight Requirements\nPlants need varying amounts of light to grow healthily throughout the seasons:\nBeginner Gardening Guide — Simple Guide\tPage 2 of 5\nBEGINNER GARDENING GUIDE\nEasy Plants for Beginners\nBest Vegetables for Beginners\nStart with forgiving plants that grow quickly and yield generous harvests:\nRadishes: Ready to harvest in just 30 days from seed.\nZucchini: Highly productive and simple to maintain.\nBasil: Thrives in containers on bright windowsills.\nBeginner Gardening Guide — Simple Guide\tPage 3 of 5\nBEGINNER GARDENING GUIDE\nWatering & Plant Care\nCorrect Watering Techniques",
+                    "search_score": 0.5825661,
+                    "reranker_score": null
+                },
+                {
+                    "id": "3_Beginners_Guide_to_Gardening-1",
+                    "source": "3_Beginners_Guide_to_Gardening.docx",
+                    "content": "Correct Watering Techniques\nOverwatering is the most common mistake made by new gardeners. Follow these key practices:\nCheck soil moisture by inserting a finger 1 inch deep.\nWater deeply at the base of the plant early in the morning.\nEnsure containers have proper drainage holes at the bottom.\nBeginner Gardening Guide — Simple Guide\tPage 4 of 5\nBEGINNER GARDENING GUIDE\nHarvesting & Enjoyment\nKnowing When to Harvest\nHarvest vegetables early and often to encourage the plant to produce more yields throughout the growing season.\nConclusion\nGardening is a continuous learning experience. Enjoy the peaceful process, celebrate small wins, and learn from every season!\nBeginner Gardening Guide — Simple Guide\tPage 5 of 5",
+                    "search_score": 0.5790275,
+                    "reranker_score": null
+                },
+                {
+                    "id": "1_Moringa_Tea_Health_Guide-1",
+                    "source": "1_Moringa_Tea_Health_Guide.docx",
+                    "content": "Boil fresh, clean water to approximately 90°C (194°F).\nPlace 1 to 2 teaspoons of dried moringa leaves into a tea infuser.\nPour hot water over the leaves and steep for 3 to 5 minutes.\nRemove the infuser, add natural sweeteners or lemon if desired, and enjoy!\nBrewing Tip: Avoid using boiling hot water directly on leaves to prevent scorching and destroying delicate vitamins.\nMORINGA TEA HEALTH GUIDE\nCulinary Uses & Recipes\nCreative Ways to Consume Moringa\nBeyond traditional tea infusions, moringa can be integrated into daily meals easily:\nIced Moringa Lemonade: Chill brewed moringa tea, blend with fresh lemon juice and honey.\nSmoothie Booster: Stir cooled moringa tea or leaf powder directly into green smoothies.\nSoups & Broths: Add steeped tea to vegetable broths for an extra nutrient infusion.\nMORINGA TEA HEALTH GUIDE\nSafety & Summary\nPrecautions & Recommended Dosage\nMoringa tea is generally safe for daily consumption. Drinking 1–2 cups per day is standard for most healthy adults. However, pregnant individuals or those taking blood-sugar medications should consult a doctor first.\nSummary",
+                    "search_score": 0.574328,
+                    "reranker_score": null
+                },
+                {
+                    "id": "4_Italian_Coffee_Culture-0",
+                    "source": "4_Italian_Coffee_Culture.docx",
+                    "content": "ITALIAN COFFEE CULTURE\nIntroduction to Coffee Traditions\nThe Art of Italian Coffee\nIn Italy, coffee is more than just a morning routine; it is a rich cultural ritual centered on quality, speed, and social connection.\nEveryday Etiquette\nItalians typically drink coffee standing up at a local bar counter, enjoying a quick espresso shot before starting their workday.\nItalian Coffee Culture — Simple Guide\tPage 1 of 5\nITALIAN COFFEE CULTURE\nPopular Espresso Drinks\nStandard Coffee Menu\nUnderstanding the classic Italian coffee menu options:\nItalian Coffee Culture — Simple Guide\tPage 2 of 5\nITALIAN COFFEE CULTURE\nHome Brewing with the Moka Pot\nThe Iconic Moka Pot\nThe stovetop Moka Pot, invented by Alfonso Bialetti in 1933, is present in nearly every Italian kitchen.\nMoka Brewing Steps\nFill the bottom chamber with cold water up to the safety valve.\nAdd medium-ground coffee to the filter basket without pressing down hard.\nScrew the top chamber securely and heat on low stovetop flame until coffee fills the upper pot.\nItalian Coffee Culture — Simple Guide\tPage 3 of 5\nITALIAN COFFEE CULTURE\nBeans & Roasting Profiles\nItalian Roast Styles",
+                    "search_score": 0.5665017,
+                    "reranker_score": null
+                },
+                {
+                    "id": "5_Introduction_to_Yoga-1",
+                    "source": "5_Introduction_to_Yoga.docx",
+                    "content": "Enhances sleep quality and body awareness.\nIntroduction to Yoga — Simple Guide\tPage 4 of 5\nINTRODUCTION TO YOGA\nTips for Starting Your Journey\nHow to Start at Home\nFind a quiet space with a non-slip yoga mat.\nStart with short 10-to-15-minute daily sessions.\nListen to your body and avoid forcing deep stretches.\nConclusion\nYoga is a personal journey, not a competition. Consistency and mindful presence are all you need to reap lifelong benefits.\nIntroduction to Yoga — Simple Guide\tPage 5 of 5",
+                    "search_score": 0.56540936,
+                    "reranker_score": null
+                }
+            ],
+            "chunks": [
+                {
+                    "id": "4_Italian_Coffee_Culture-0",
+                    "source": "4_Italian_Coffee_Culture.docx",
+                    "content": "ITALIAN COFFEE CULTURE\nIntroduction to Coffee Traditions\nThe Art of Italian Coffee\nIn Italy, coffee is more than just a morning routine; it is a rich cultural ritual centered on quality, speed, and social connection.\nEveryday Etiquette\nItalians typically drink coffee standing up at a local bar counter, enjoying a quick espresso shot before starting their workday.\nItalian Coffee Culture — Simple Guide\tPage 1 of 5\nITALIAN COFFEE CULTURE\nPopular Espresso Drinks\nStandard Coffee Menu\nUnderstanding the classic Italian coffee menu options:\nItalian Coffee Culture — Simple Guide\tPage 2 of 5\nITALIAN COFFEE CULTURE\nHome Brewing with the Moka Pot\nThe Iconic Moka Pot\nThe stovetop Moka Pot, invented by Alfonso Bialetti in 1933, is present in nearly every Italian kitchen.\nMoka Brewing Steps\nFill the bottom chamber with cold water up to the safety valve.\nAdd medium-ground coffee to the filter basket without pressing down hard.\nScrew the top chamber securely and heat on low stovetop flame until coffee fills the upper pot.\nItalian Coffee Culture — Simple Guide\tPage 3 of 5\nITALIAN COFFEE CULTURE\nBeans & Roasting Profiles\nItalian Roast Styles",
+                    "search_score": 0.5665017,
+                    "reranker_score": null
+                },
+                {
+                    "id": "1_Moringa_Tea_Health_Guide-1",
+                    "source": "1_Moringa_Tea_Health_Guide.docx",
+                    "content": "Boil fresh, clean water to approximately 90°C (194°F).\nPlace 1 to 2 teaspoons of dried moringa leaves into a tea infuser.\nPour hot water over the leaves and steep for 3 to 5 minutes.\nRemove the infuser, add natural sweeteners or lemon if desired, and enjoy!\nBrewing Tip: Avoid using boiling hot water directly on leaves to prevent scorching and destroying delicate vitamins.\nMORINGA TEA HEALTH GUIDE\nCulinary Uses & Recipes\nCreative Ways to Consume Moringa\nBeyond traditional tea infusions, moringa can be integrated into daily meals easily:\nIced Moringa Lemonade: Chill brewed moringa tea, blend with fresh lemon juice and honey.\nSmoothie Booster: Stir cooled moringa tea or leaf powder directly into green smoothies.\nSoups & Broths: Add steeped tea to vegetable broths for an extra nutrient infusion.\nMORINGA TEA HEALTH GUIDE\nSafety & Summary\nPrecautions & Recommended Dosage\nMoringa tea is generally safe for daily consumption. Drinking 1–2 cups per day is standard for most healthy adults. However, pregnant individuals or those taking blood-sugar medications should consult a doctor first.\nSummary",
+                    "search_score": 0.574328,
+                    "reranker_score": null
+                },
+                {
+                    "id": "5_Introduction_to_Yoga-1",
+                    "source": "5_Introduction_to_Yoga.docx",
+                    "content": "Enhances sleep quality and body awareness.\nIntroduction to Yoga — Simple Guide\tPage 4 of 5\nINTRODUCTION TO YOGA\nTips for Starting Your Journey\nHow to Start at Home\nFind a quiet space with a non-slip yoga mat.\nStart with short 10-to-15-minute daily sessions.\nListen to your body and avoid forcing deep stretches.\nConclusion\nYoga is a personal journey, not a competition. Consistency and mindful presence are all you need to reap lifelong benefits.\nIntroduction to Yoga — Simple Guide\tPage 5 of 5",
+                    "search_score": 0.56540936,
+                    "reranker_score": null
+                }
+            ],
+            "precision_at_k": 0.0,
+            "retrieval_recall": null,
+            "context_relevance": 0.52,
+            "answer_correctness": 1.0,
+            "faithfulness": 1.0,
+            "rewrite_triggered": true,
+            "rewritten_query": "What steps should I follow to prepare it at home?",
+            "retrieval_attempts": 2,
+            "quality_sufficient": false,
+            "quality_reason": "The question uses the ambiguous reference \"it,\" and the referent cannot be identified from the question itself. Although one chunk contains home-preparation steps for coffee and another for moringa tea, the context cannot be used to resolve which item the user means.",
+            "latency_seconds": 15.010475900024176,
+            "answer": "I could not find enough information in the available knowledge base to answer this question.",
+            "sources": []
+        },
+        {
+            "id": 3,
+            "type": "query_rewriting",
+            "query": "My plant looks like I may be caring for it too much. How can I know if I should wait before doing it again?",
+            "expected_information": "How to determine whether a plant needs watering and avoid overwatering.",
+            "strategy": "vector",
+            "retrieved_ids": [
+                "3_Beginners_Guide_to_Gardening-1",
+                "3_Beginners_Guide_to_Gardening-0",
+                "1_Moringa_Tea_Health_Guide-1"
+            ],
+            "relevant_ids": [
+                "3_Beginners_Guide_to_Gardening-1"
+            ],
+            "reranking_applied": true,
+            "before_reranking_ids": [
+                "3_Beginners_Guide_to_Gardening-1",
+                "3_Beginners_Guide_to_Gardening-0",
+                "1_Moringa_Tea_Health_Guide-1",
+                "1_Moringa_Tea_Health_Guide-0",
+                "1_Moringa_Tea_Health_Guide-2"
+            ],
+            "after_reranking_ids": [
+                "3_Beginners_Guide_to_Gardening-1",
+                "3_Beginners_Guide_to_Gardening-0",
+                "1_Moringa_Tea_Health_Guide-1"
+            ],
+            "before_reranking_chunks": [
+                {
+                    "id": "3_Beginners_Guide_to_Gardening-1",
+                    "source": "3_Beginners_Guide_to_Gardening.docx",
+                    "content": "Correct Watering Techniques\nOverwatering is the most common mistake made by new gardeners. Follow these key practices:\nCheck soil moisture by inserting a finger 1 inch deep.\nWater deeply at the base of the plant early in the morning.\nEnsure containers have proper drainage holes at the bottom.\nBeginner Gardening Guide — Simple Guide\tPage 4 of 5\nBEGINNER GARDENING GUIDE\nHarvesting & Enjoyment\nKnowing When to Harvest\nHarvest vegetables early and often to encourage the plant to produce more yields throughout the growing season.\nConclusion\nGardening is a continuous learning experience. Enjoy the peaceful process, celebrate small wins, and learn from every season!\nBeginner Gardening Guide — Simple Guide\tPage 5 of 5",
+                    "search_score": 0.66126317,
+                    "reranker_score": null
+                },
+                {
+                    "id": "3_Beginners_Guide_to_Gardening-0",
+                    "source": "3_Beginners_Guide_to_Gardening.docx",
+                    "content": "BEGINNER GARDENING GUIDE\nGetting Started with Gardening\nWelcome to Gardening\nGardening is a rewarding hobby that connects you with nature while producing fresh flowers, herbs, and vegetables. Getting started requires just a few basic elements and patience.\nEssential Gardening Tools\nHand Trowel: For digging small holes and planting seedlings.\nWatering Can: Gentle moisture application for young plants.\nPruning Shears: Trimming dead leaves and harvesting produce.\nBeginner Gardening Guide — Simple Guide\tPage 1 of 5\nBEGINNER GARDENING GUIDE\nSoil & Sun Essentials\nSunlight Requirements\nPlants need varying amounts of light to grow healthily throughout the seasons:\nBeginner Gardening Guide — Simple Guide\tPage 2 of 5\nBEGINNER GARDENING GUIDE\nEasy Plants for Beginners\nBest Vegetables for Beginners\nStart with forgiving plants that grow quickly and yield generous harvests:\nRadishes: Ready to harvest in just 30 days from seed.\nZucchini: Highly productive and simple to maintain.\nBasil: Thrives in containers on bright windowsills.\nBeginner Gardening Guide — Simple Guide\tPage 3 of 5\nBEGINNER GARDENING GUIDE\nWatering & Plant Care\nCorrect Watering Techniques",
+                    "search_score": 0.5858368,
+                    "reranker_score": null
+                },
+                {
+                    "id": "1_Moringa_Tea_Health_Guide-1",
+                    "source": "1_Moringa_Tea_Health_Guide.docx",
+                    "content": "Boil fresh, clean water to approximately 90°C (194°F).\nPlace 1 to 2 teaspoons of dried moringa leaves into a tea infuser.\nPour hot water over the leaves and steep for 3 to 5 minutes.\nRemove the infuser, add natural sweeteners or lemon if desired, and enjoy!\nBrewing Tip: Avoid using boiling hot water directly on leaves to prevent scorching and destroying delicate vitamins.\nMORINGA TEA HEALTH GUIDE\nCulinary Uses & Recipes\nCreative Ways to Consume Moringa\nBeyond traditional tea infusions, moringa can be integrated into daily meals easily:\nIced Moringa Lemonade: Chill brewed moringa tea, blend with fresh lemon juice and honey.\nSmoothie Booster: Stir cooled moringa tea or leaf powder directly into green smoothies.\nSoups & Broths: Add steeped tea to vegetable broths for an extra nutrient infusion.\nMORINGA TEA HEALTH GUIDE\nSafety & Summary\nPrecautions & Recommended Dosage\nMoringa tea is generally safe for daily consumption. Drinking 1–2 cups per day is standard for most healthy adults. However, pregnant individuals or those taking blood-sugar medications should consult a doctor first.\nSummary",
+                    "search_score": 0.54657406,
+                    "reranker_score": null
+                },
+                {
+                    "id": "1_Moringa_Tea_Health_Guide-0",
+                    "source": "1_Moringa_Tea_Health_Guide.docx",
+                    "content": "MORINGA TEA HEALTH GUIDE\nIntroduction & Origins\nWhat is Moringa Tea?\nMoringa tea is a nutrient-packed herbal infusion made from the dried leaves of the Moringa oleifera tree, native to parts of Asia and Africa. Often referred to as the \"miracle tree,\" Moringa has been used for centuries in traditional wellness practices.\nNutritional Profile\nMoringa leaves are exceptionally dense in essential vitamins, minerals, and antioxidants compared to common everyday vegetables.\nMORINGA TEA HEALTH GUIDE\nKey Health Benefits\nTop Health Benefits\nRegular consumption of moringa tea supports overall vitality and well-being through multiple key functions:\nRich in Antioxidants: Helps fight free radicals and oxidative stress.\nSupports Energy: Natural, caffeine-free boost without energy crashes.\nPromotes Heart Health: Helps maintain healthy cholesterol and blood pressure levels.\nHealth Comparisons\nMoringa Tea Health Guide — Simple Guide\tPag\nMORINGA TEA HEALTH GUIDE\nHow to Brew the Perfect Cup\nStep-by-Step Brewing Guide\nBrewing moringa tea is simple and quick. Follow these basic steps for maximum flavor and nutrient retention:\nBoil fresh, clean water to approximately 90°C (194°F).",
+                    "search_score": 0.54488117,
+                    "reranker_score": null
+                },
+                {
+                    "id": "1_Moringa_Tea_Health_Guide-2",
+                    "source": "1_Moringa_Tea_Health_Guide.docx",
+                    "content": "Summary\nMoringa tea is a simple, refreshing, and highly nutritious caffeine-free herbal beverage that fits effortlessly into a healthy modern lifestyle.",
+                    "search_score": 0.5278169,
+                    "reranker_score": null
+                }
+            ],
+            "chunks": [
+                {
+                    "id": "3_Beginners_Guide_to_Gardening-1",
+                    "source": "3_Beginners_Guide_to_Gardening.docx",
+                    "content": "Correct Watering Techniques\nOverwatering is the most common mistake made by new gardeners. Follow these key practices:\nCheck soil moisture by inserting a finger 1 inch deep.\nWater deeply at the base of the plant early in the morning.\nEnsure containers have proper drainage holes at the bottom.\nBeginner Gardening Guide — Simple Guide\tPage 4 of 5\nBEGINNER GARDENING GUIDE\nHarvesting & Enjoyment\nKnowing When to Harvest\nHarvest vegetables early and often to encourage the plant to produce more yields throughout the growing season.\nConclusion\nGardening is a continuous learning experience. Enjoy the peaceful process, celebrate small wins, and learn from every season!\nBeginner Gardening Guide — Simple Guide\tPage 5 of 5",
+                    "search_score": 0.66126317,
+                    "reranker_score": null
+                },
+                {
+                    "id": "3_Beginners_Guide_to_Gardening-0",
+                    "source": "3_Beginners_Guide_to_Gardening.docx",
+                    "content": "BEGINNER GARDENING GUIDE\nGetting Started with Gardening\nWelcome to Gardening\nGardening is a rewarding hobby that connects you with nature while producing fresh flowers, herbs, and vegetables. Getting started requires just a few basic elements and patience.\nEssential Gardening Tools\nHand Trowel: For digging small holes and planting seedlings.\nWatering Can: Gentle moisture application for young plants.\nPruning Shears: Trimming dead leaves and harvesting produce.\nBeginner Gardening Guide — Simple Guide\tPage 1 of 5\nBEGINNER GARDENING GUIDE\nSoil & Sun Essentials\nSunlight Requirements\nPlants need varying amounts of light to grow healthily throughout the seasons:\nBeginner Gardening Guide — Simple Guide\tPage 2 of 5\nBEGINNER GARDENING GUIDE\nEasy Plants for Beginners\nBest Vegetables for Beginners\nStart with forgiving plants that grow quickly and yield generous harvests:\nRadishes: Ready to harvest in just 30 days from seed.\nZucchini: Highly productive and simple to maintain.\nBasil: Thrives in containers on bright windowsills.\nBeginner Gardening Guide — Simple Guide\tPage 3 of 5\nBEGINNER GARDENING GUIDE\nWatering & Plant Care\nCorrect Watering Techniques",
+                    "search_score": 0.5858368,
+                    "reranker_score": null
+                },
+                {
+                    "id": "1_Moringa_Tea_Health_Guide-1",
+                    "source": "1_Moringa_Tea_Health_Guide.docx",
+                    "content": "Boil fresh, clean water to approximately 90°C (194°F).\nPlace 1 to 2 teaspoons of dried moringa leaves into a tea infuser.\nPour hot water over the leaves and steep for 3 to 5 minutes.\nRemove the infuser, add natural sweeteners or lemon if desired, and enjoy!\nBrewing Tip: Avoid using boiling hot water directly on leaves to prevent scorching and destroying delicate vitamins.\nMORINGA TEA HEALTH GUIDE\nCulinary Uses & Recipes\nCreative Ways to Consume Moringa\nBeyond traditional tea infusions, moringa can be integrated into daily meals easily:\nIced Moringa Lemonade: Chill brewed moringa tea, blend with fresh lemon juice and honey.\nSmoothie Booster: Stir cooled moringa tea or leaf powder directly into green smoothies.\nSoups & Broths: Add steeped tea to vegetable broths for an extra nutrient infusion.\nMORINGA TEA HEALTH GUIDE\nSafety & Summary\nPrecautions & Recommended Dosage\nMoringa tea is generally safe for daily consumption. Drinking 1–2 cups per day is standard for most healthy adults. However, pregnant individuals or those taking blood-sugar medications should consult a doctor first.\nSummary",
+                    "search_score": 0.54657406,
+                    "reranker_score": null
+                }
+            ],
+            "precision_at_k": 0.3333333333333333,
+            "retrieval_recall": 1.0,
+            "context_relevance": 0.93,
+            "answer_correctness": 0.9,
+            "faithfulness": 1.0,
+            "rewrite_triggered": true,
+            "rewritten_query": "How can I tell if I am overwatering my plant and should wait before watering it again?",
+            "retrieval_attempts": 2,
+            "quality_sufficient": false,
+            "quality_reason": "The question uses the ambiguous reference \"it,\" and the referent cannot be identified from the question itself. Although the context discusses watering and checking soil moisture, it cannot be used to resolve what \"it\" refers to, so the evidence is insufficient.",
+            "latency_seconds": 14.814140200032853,
+            "answer": "I could not find enough information in the available knowledge base to answer this question.",
+            "sources": []
+        },
+        {
+            "id": 4,
+            "type": "alternative_retrieval",
+            "query": "What does the guide say about Moka Pot brewing steps and the safety valve?",
+            "expected_information": "Fill the bottom chamber with cold water up to the safety valve, add medium-ground coffee without pressing it down, screw on the top chamber, and heat on a low flame until coffee fills the upper pot.",
+            "strategy": "hybrid",
+            "retrieved_ids": [
+                "4_Italian_Coffee_Culture-0",
+                "4_Italian_Coffee_Culture-1",
+                "1_Moringa_Tea_Health_Guide-1"
+            ],
+            "relevant_ids": [
+                "4_Italian_Coffee_Culture-0"
+            ],
+            "reranking_applied": true,
+            "before_reranking_ids": [
+                "4_Italian_Coffee_Culture-0",
+                "4_Italian_Coffee_Culture-1",
+                "1_Moringa_Tea_Health_Guide-1",
+                "1_Moringa_Tea_Health_Guide-0",
+                "3_Beginners_Guide_to_Gardening-0"
+            ],
+            "after_reranking_ids": [
+                "4_Italian_Coffee_Culture-0",
+                "4_Italian_Coffee_Culture-1",
+                "1_Moringa_Tea_Health_Guide-1"
+            ],
+            "before_reranking_chunks": [
+                {
+                    "id": "4_Italian_Coffee_Culture-0",
+                    "source": "4_Italian_Coffee_Culture.docx",
+                    "content": "ITALIAN COFFEE CULTURE\nIntroduction to Coffee Traditions\nThe Art of Italian Coffee\nIn Italy, coffee is more than just a morning routine; it is a rich cultural ritual centered on quality, speed, and social connection.\nEveryday Etiquette\nItalians typically drink coffee standing up at a local bar counter, enjoying a quick espresso shot before starting their workday.\nItalian Coffee Culture — Simple Guide\tPage 1 of 5\nITALIAN COFFEE CULTURE\nPopular Espresso Drinks\nStandard Coffee Menu\nUnderstanding the classic Italian coffee menu options:\nItalian Coffee Culture — Simple Guide\tPage 2 of 5\nITALIAN COFFEE CULTURE\nHome Brewing with the Moka Pot\nThe Iconic Moka Pot\nThe stovetop Moka Pot, invented by Alfonso Bialetti in 1933, is present in nearly every Italian kitchen.\nMoka Brewing Steps\nFill the bottom chamber with cold water up to the safety valve.\nAdd medium-ground coffee to the filter basket without pressing down hard.\nScrew the top chamber securely and heat on low stovetop flame until coffee fills the upper pot.\nItalian Coffee Culture — Simple Guide\tPage 3 of 5\nITALIAN COFFEE CULTURE\nBeans & Roasting Profiles\nItalian Roast Styles",
+                    "search_score": 0.03306011110544205,
+                    "reranker_score": 2.8443455696105957
+                },
+                {
+                    "id": "4_Italian_Coffee_Culture-1",
+                    "source": "4_Italian_Coffee_Culture.docx",
+                    "content": "Italian Roast Styles\nItalian coffee roasts emphasize medium-to-dark bean profiles, creating full-bodied espresso with thick crema layers and rich chocolate notes.\nArabica: Adds smooth floral flavor and pleasant acidity.\nRobusta: Adds rich body, caffeine boost, and thick crema.\nItalian Coffee Culture — Simple Guide\tPage 4 of 5\nITALIAN COFFEE CULTURE\nGlobal Impact & Conclusion\nGlobal Influence\nItalian coffee traditions inspired modern espresso bars worldwide, shaping how urban societies consume coffee globally today.\nSummary\nWhether enjoying a quick espresso at a bar or brewing with a Moka pot at home, Italian coffee celebrates simplicity and quality craftsmanship.\nItalian Coffee Culture — Simple Guide\tPage 5 of 5",
+                    "search_score": 0.03125763311982155,
+                    "reranker_score": 1.9505515098571777
+                },
+                {
+                    "id": "1_Moringa_Tea_Health_Guide-1",
+                    "source": "1_Moringa_Tea_Health_Guide.docx",
+                    "content": "Boil fresh, clean water to approximately 90°C (194°F).\nPlace 1 to 2 teaspoons of dried moringa leaves into a tea infuser.\nPour hot water over the leaves and steep for 3 to 5 minutes.\nRemove the infuser, add natural sweeteners or lemon if desired, and enjoy!\nBrewing Tip: Avoid using boiling hot water directly on leaves to prevent scorching and destroying delicate vitamins.\nMORINGA TEA HEALTH GUIDE\nCulinary Uses & Recipes\nCreative Ways to Consume Moringa\nBeyond traditional tea infusions, moringa can be integrated into daily meals easily:\nIced Moringa Lemonade: Chill brewed moringa tea, blend with fresh lemon juice and honey.\nSmoothie Booster: Stir cooled moringa tea or leaf powder directly into green smoothies.\nSoups & Broths: Add steeped tea to vegetable broths for an extra nutrient infusion.\nMORINGA TEA HEALTH GUIDE\nSafety & Summary\nPrecautions & Recommended Dosage\nMoringa tea is generally safe for daily consumption. Drinking 1–2 cups per day is standard for most healthy adults. However, pregnant individuals or those taking blood-sugar medications should consult a doctor first.\nSummary",
+                    "search_score": 0.0317540317773819,
+                    "reranker_score": 1.1450203657150269
+                },
+                {
+                    "id": "1_Moringa_Tea_Health_Guide-0",
+                    "source": "1_Moringa_Tea_Health_Guide.docx",
+                    "content": "MORINGA TEA HEALTH GUIDE\nIntroduction & Origins\nWhat is Moringa Tea?\nMoringa tea is a nutrient-packed herbal infusion made from the dried leaves of the Moringa oleifera tree, native to parts of Asia and Africa. Often referred to as the \"miracle tree,\" Moringa has been used for centuries in traditional wellness practices.\nNutritional Profile\nMoringa leaves are exceptionally dense in essential vitamins, minerals, and antioxidants compared to common everyday vegetables.\nMORINGA TEA HEALTH GUIDE\nKey Health Benefits\nTop Health Benefits\nRegular consumption of moringa tea supports overall vitality and well-being through multiple key functions:\nRich in Antioxidants: Helps fight free radicals and oxidative stress.\nSupports Energy: Natural, caffeine-free boost without energy crashes.\nPromotes Heart Health: Helps maintain healthy cholesterol and blood pressure levels.\nHealth Comparisons\nMoringa Tea Health Guide — Simple Guide\tPag\nMORINGA TEA HEALTH GUIDE\nHow to Brew the Perfect Cup\nStep-by-Step Brewing Guide\nBrewing moringa tea is simple and quick. Follow these basic steps for maximum flavor and nutrient retention:\nBoil fresh, clean water to approximately 90°C (194°F).",
+                    "search_score": 0.03306011110544205,
+                    "reranker_score": 1.125170111656189
+                },
+                {
+                    "id": "3_Beginners_Guide_to_Gardening-0",
+                    "source": "3_Beginners_Guide_to_Gardening.docx",
+                    "content": "BEGINNER GARDENING GUIDE\nGetting Started with Gardening\nWelcome to Gardening\nGardening is a rewarding hobby that connects you with nature while producing fresh flowers, herbs, and vegetables. Getting started requires just a few basic elements and patience.\nEssential Gardening Tools\nHand Trowel: For digging small holes and planting seedlings.\nWatering Can: Gentle moisture application for young plants.\nPruning Shears: Trimming dead leaves and harvesting produce.\nBeginner Gardening Guide — Simple Guide\tPage 1 of 5\nBEGINNER GARDENING GUIDE\nSoil & Sun Essentials\nSunlight Requirements\nPlants need varying amounts of light to grow healthily throughout the seasons:\nBeginner Gardening Guide — Simple Guide\tPage 2 of 5\nBEGINNER GARDENING GUIDE\nEasy Plants for Beginners\nBest Vegetables for Beginners\nStart with forgiving plants that grow quickly and yield generous harvests:\nRadishes: Ready to harvest in just 30 days from seed.\nZucchini: Highly productive and simple to maintain.\nBasil: Thrives in containers on bright windowsills.\nBeginner Gardening Guide — Simple Guide\tPage 3 of 5\nBEGINNER GARDENING GUIDE\nWatering & Plant Care\nCorrect Watering Techniques",
+                    "search_score": 0.014705882407724857,
+                    "reranker_score": 1.0875964164733887
+                }
+            ],
+            "chunks": [
+                {
+                    "id": "4_Italian_Coffee_Culture-0",
+                    "source": "4_Italian_Coffee_Culture.docx",
+                    "content": "ITALIAN COFFEE CULTURE\nIntroduction to Coffee Traditions\nThe Art of Italian Coffee\nIn Italy, coffee is more than just a morning routine; it is a rich cultural ritual centered on quality, speed, and social connection.\nEveryday Etiquette\nItalians typically drink coffee standing up at a local bar counter, enjoying a quick espresso shot before starting their workday.\nItalian Coffee Culture — Simple Guide\tPage 1 of 5\nITALIAN COFFEE CULTURE\nPopular Espresso Drinks\nStandard Coffee Menu\nUnderstanding the classic Italian coffee menu options:\nItalian Coffee Culture — Simple Guide\tPage 2 of 5\nITALIAN COFFEE CULTURE\nHome Brewing with the Moka Pot\nThe Iconic Moka Pot\nThe stovetop Moka Pot, invented by Alfonso Bialetti in 1933, is present in nearly every Italian kitchen.\nMoka Brewing Steps\nFill the bottom chamber with cold water up to the safety valve.\nAdd medium-ground coffee to the filter basket without pressing down hard.\nScrew the top chamber securely and heat on low stovetop flame until coffee fills the upper pot.\nItalian Coffee Culture — Simple Guide\tPage 3 of 5\nITALIAN COFFEE CULTURE\nBeans & Roasting Profiles\nItalian Roast Styles",
+                    "search_score": 0.03306011110544205,
+                    "reranker_score": 2.8443455696105957
+                },
+                {
+                    "id": "4_Italian_Coffee_Culture-1",
+                    "source": "4_Italian_Coffee_Culture.docx",
+                    "content": "Italian Roast Styles\nItalian coffee roasts emphasize medium-to-dark bean profiles, creating full-bodied espresso with thick crema layers and rich chocolate notes.\nArabica: Adds smooth floral flavor and pleasant acidity.\nRobusta: Adds rich body, caffeine boost, and thick crema.\nItalian Coffee Culture — Simple Guide\tPage 4 of 5\nITALIAN COFFEE CULTURE\nGlobal Impact & Conclusion\nGlobal Influence\nItalian coffee traditions inspired modern espresso bars worldwide, shaping how urban societies consume coffee globally today.\nSummary\nWhether enjoying a quick espresso at a bar or brewing with a Moka pot at home, Italian coffee celebrates simplicity and quality craftsmanship.\nItalian Coffee Culture — Simple Guide\tPage 5 of 5",
+                    "search_score": 0.03125763311982155,
+                    "reranker_score": 1.9505515098571777
+                },
+                {
+                    "id": "1_Moringa_Tea_Health_Guide-1",
+                    "source": "1_Moringa_Tea_Health_Guide.docx",
+                    "content": "Boil fresh, clean water to approximately 90°C (194°F).\nPlace 1 to 2 teaspoons of dried moringa leaves into a tea infuser.\nPour hot water over the leaves and steep for 3 to 5 minutes.\nRemove the infuser, add natural sweeteners or lemon if desired, and enjoy!\nBrewing Tip: Avoid using boiling hot water directly on leaves to prevent scorching and destroying delicate vitamins.\nMORINGA TEA HEALTH GUIDE\nCulinary Uses & Recipes\nCreative Ways to Consume Moringa\nBeyond traditional tea infusions, moringa can be integrated into daily meals easily:\nIced Moringa Lemonade: Chill brewed moringa tea, blend with fresh lemon juice and honey.\nSmoothie Booster: Stir cooled moringa tea or leaf powder directly into green smoothies.\nSoups & Broths: Add steeped tea to vegetable broths for an extra nutrient infusion.\nMORINGA TEA HEALTH GUIDE\nSafety & Summary\nPrecautions & Recommended Dosage\nMoringa tea is generally safe for daily consumption. Drinking 1–2 cups per day is standard for most healthy adults. However, pregnant individuals or those taking blood-sugar medications should consult a doctor first.\nSummary",
+                    "search_score": 0.0317540317773819,
+                    "reranker_score": 1.1450203657150269
+                }
+            ],
+            "precision_at_k": 0.3333333333333333,
+            "retrieval_recall": 1.0,
+            "context_relevance": 0.98,
+            "answer_correctness": 0.98,
+            "faithfulness": 1.0,
+            "rewrite_triggered": false,
+            "rewritten_query": null,
+            "retrieval_attempts": 1,
+            "quality_sufficient": true,
+            "quality_reason": "The retrieved context directly includes the Moka Pot brewing steps and explicitly mentions filling the bottom chamber with cold water up to the safety valve, adding medium-ground coffee without pressing, and heating on low flame until coffee fills the upper pot.",
+            "latency_seconds": 9.404076399980113,
+            "answer": "The guide says to brew a Moka Pot by:\n\n- Filling the bottom chamber with cold water up to the safety valve.\n- Adding medium-ground coffee to the filter basket without pressing down hard.\n- Screwing the top chamber securely and heating on a low stovetop flame until coffee fills the upper pot.  \n\nIt also specifically mentions the safety valve as the water fill limit in the bottom chamber.  \nSource: **4_Italian_Coffee_Culture.docx**",
+            "sources": [
+                "4_Italian_Coffee_Culture.docx",
+                "1_Moringa_Tea_Health_Guide.docx"
+            ]
+        },
+        {
+            "id": 5,
+            "type": "multiple_documents",
+            "query": "Compare the health benefits of yoga and moringa tea.",
+            "expected_information": "The answer should compare yoga benefits with moringa tea benefits using evidence from both the Yoga and Moringa documents.",
+            "strategy": "hybrid",
+            "retrieved_ids": [
+                "5_Introduction_to_Yoga-0",
+                "1_Moringa_Tea_Health_Guide-0",
+                "5_Introduction_to_Yoga-1"
+            ],
+            "relevant_ids": [
+                "5_Introduction_to_Yoga-0",
+                "5_Introduction_to_Yoga-1",
+                "1_Moringa_Tea_Health_Guide-0"
+            ],
+            "reranking_applied": true,
+            "before_reranking_ids": [
+                "1_Moringa_Tea_Health_Guide-0",
+                "5_Introduction_to_Yoga-0",
+                "1_Moringa_Tea_Health_Guide-2",
+                "1_Moringa_Tea_Health_Guide-1",
+                "5_Introduction_to_Yoga-1"
+            ],
+            "after_reranking_ids": [
+                "5_Introduction_to_Yoga-0",
+                "1_Moringa_Tea_Health_Guide-0",
+                "5_Introduction_to_Yoga-1"
+            ],
+            "before_reranking_chunks": [
+                {
+                    "id": "1_Moringa_Tea_Health_Guide-0",
+                    "source": "1_Moringa_Tea_Health_Guide.docx",
+                    "content": "MORINGA TEA HEALTH GUIDE\nIntroduction & Origins\nWhat is Moringa Tea?\nMoringa tea is a nutrient-packed herbal infusion made from the dried leaves of the Moringa oleifera tree, native to parts of Asia and Africa. Often referred to as the \"miracle tree,\" Moringa has been used for centuries in traditional wellness practices.\nNutritional Profile\nMoringa leaves are exceptionally dense in essential vitamins, minerals, and antioxidants compared to common everyday vegetables.\nMORINGA TEA HEALTH GUIDE\nKey Health Benefits\nTop Health Benefits\nRegular consumption of moringa tea supports overall vitality and well-being through multiple key functions:\nRich in Antioxidants: Helps fight free radicals and oxidative stress.\nSupports Energy: Natural, caffeine-free boost without energy crashes.\nPromotes Heart Health: Helps maintain healthy cholesterol and blood pressure levels.\nHealth Comparisons\nMoringa Tea Health Guide — Simple Guide\tPag\nMORINGA TEA HEALTH GUIDE\nHow to Brew the Perfect Cup\nStep-by-Step Brewing Guide\nBrewing moringa tea is simple and quick. Follow these basic steps for maximum flavor and nutrient retention:\nBoil fresh, clean water to approximately 90°C (194°F).",
+                    "search_score": 0.03333333507180214,
+                    "reranker_score": 2.589127779006958
+                },
+                {
+                    "id": "5_Introduction_to_Yoga-0",
+                    "source": "5_Introduction_to_Yoga.docx",
+                    "content": "INTRODUCTION TO YOGA\nFoundations of Mindful Movement\nWhat is Yoga?\nYoga is an ancient practice originating in India that unites physical movement, conscious breathing, and mental mindfulness to foster inner peace and physical wellness.\nCore Pillars of Practice\nAsana: Physical postures designed to build strength and flexibility.\nPranayama: Controlled breathing exercises to balance body energy.\nDhyana: Meditation for focus and mental clarity.\nIntroduction to Yoga — Simple Guide\tPage 1 of 5\nINTRODUCTION TO YOGA\nBasic Poses for Beginners\nEssential Yoga Poses\nKey foundational poses suitable for all fitness levels:\nIntroduction to Yoga — Simple Guide\tPage 2 of 5\nINTRODUCTION TO YOGA\nBreathing Techniques\nThe Power of Breath (Pranayama)\nConscious breathing calms the nervous system and improves mental focus during practice.\nIntroduction to Yoga — Simple Guide\tPage 3 of 5\nINTRODUCTION TO YOGA\nBenefits for Mind & Body\nHolistic Health Benefits\nRegular yoga practice delivers widespread physical and mental advantages:\nImproves joint flexibility and core posture balance.\nLowers cortisol levels and helps relieve daily stress.\nEnhances sleep quality and body awareness.",
+                    "search_score": 0.0320020467042923,
+                    "reranker_score": 2.3480000495910645
+                },
+                {
+                    "id": "1_Moringa_Tea_Health_Guide-2",
+                    "source": "1_Moringa_Tea_Health_Guide.docx",
+                    "content": "Summary\nMoringa tea is a simple, refreshing, and highly nutritious caffeine-free herbal beverage that fits effortlessly into a healthy modern lifestyle.",
+                    "search_score": 0.03151364624500275,
+                    "reranker_score": 2.1313750743865967
+                },
+                {
+                    "id": "1_Moringa_Tea_Health_Guide-1",
+                    "source": "1_Moringa_Tea_Health_Guide.docx",
+                    "content": "Boil fresh, clean water to approximately 90°C (194°F).\nPlace 1 to 2 teaspoons of dried moringa leaves into a tea infuser.\nPour hot water over the leaves and steep for 3 to 5 minutes.\nRemove the infuser, add natural sweeteners or lemon if desired, and enjoy!\nBrewing Tip: Avoid using boiling hot water directly on leaves to prevent scorching and destroying delicate vitamins.\nMORINGA TEA HEALTH GUIDE\nCulinary Uses & Recipes\nCreative Ways to Consume Moringa\nBeyond traditional tea infusions, moringa can be integrated into daily meals easily:\nIced Moringa Lemonade: Chill brewed moringa tea, blend with fresh lemon juice and honey.\nSmoothie Booster: Stir cooled moringa tea or leaf powder directly into green smoothies.\nSoups & Broths: Add steeped tea to vegetable broths for an extra nutrient infusion.\nMORINGA TEA HEALTH GUIDE\nSafety & Summary\nPrecautions & Recommended Dosage\nMoringa tea is generally safe for daily consumption. Drinking 1–2 cups per day is standard for most healthy adults. However, pregnant individuals or those taking blood-sugar medications should consult a doctor first.\nSummary",
+                    "search_score": 0.032786883413791656,
+                    "reranker_score": 2.0285346508026123
+                },
+                {
+                    "id": "5_Introduction_to_Yoga-1",
+                    "source": "5_Introduction_to_Yoga.docx",
+                    "content": "Enhances sleep quality and body awareness.\nIntroduction to Yoga — Simple Guide\tPage 4 of 5\nINTRODUCTION TO YOGA\nTips for Starting Your Journey\nHow to Start at Home\nFind a quiet space with a non-slip yoga mat.\nStart with short 10-to-15-minute daily sessions.\nListen to your body and avoid forcing deep stretches.\nConclusion\nYoga is a personal journey, not a competition. Consistency and mindful presence are all you need to reap lifelong benefits.\nIntroduction to Yoga — Simple Guide\tPage 5 of 5",
+                    "search_score": 0.0314980149269104,
+                    "reranker_score": 2.021622657775879
+                }
+            ],
+            "chunks": [
+                {
+                    "id": "5_Introduction_to_Yoga-0",
+                    "source": "5_Introduction_to_Yoga.docx",
+                    "content": "INTRODUCTION TO YOGA\nFoundations of Mindful Movement\nWhat is Yoga?\nYoga is an ancient practice originating in India that unites physical movement, conscious breathing, and mental mindfulness to foster inner peace and physical wellness.\nCore Pillars of Practice\nAsana: Physical postures designed to build strength and flexibility.\nPranayama: Controlled breathing exercises to balance body energy.\nDhyana: Meditation for focus and mental clarity.\nIntroduction to Yoga — Simple Guide\tPage 1 of 5\nINTRODUCTION TO YOGA\nBasic Poses for Beginners\nEssential Yoga Poses\nKey foundational poses suitable for all fitness levels:\nIntroduction to Yoga — Simple Guide\tPage 2 of 5\nINTRODUCTION TO YOGA\nBreathing Techniques\nThe Power of Breath (Pranayama)\nConscious breathing calms the nervous system and improves mental focus during practice.\nIntroduction to Yoga — Simple Guide\tPage 3 of 5\nINTRODUCTION TO YOGA\nBenefits for Mind & Body\nHolistic Health Benefits\nRegular yoga practice delivers widespread physical and mental advantages:\nImproves joint flexibility and core posture balance.\nLowers cortisol levels and helps relieve daily stress.\nEnhances sleep quality and body awareness.",
+                    "search_score": 0.0320020467042923,
+                    "reranker_score": 2.3480000495910645
+                },
+                {
+                    "id": "1_Moringa_Tea_Health_Guide-0",
+                    "source": "1_Moringa_Tea_Health_Guide.docx",
+                    "content": "MORINGA TEA HEALTH GUIDE\nIntroduction & Origins\nWhat is Moringa Tea?\nMoringa tea is a nutrient-packed herbal infusion made from the dried leaves of the Moringa oleifera tree, native to parts of Asia and Africa. Often referred to as the \"miracle tree,\" Moringa has been used for centuries in traditional wellness practices.\nNutritional Profile\nMoringa leaves are exceptionally dense in essential vitamins, minerals, and antioxidants compared to common everyday vegetables.\nMORINGA TEA HEALTH GUIDE\nKey Health Benefits\nTop Health Benefits\nRegular consumption of moringa tea supports overall vitality and well-being through multiple key functions:\nRich in Antioxidants: Helps fight free radicals and oxidative stress.\nSupports Energy: Natural, caffeine-free boost without energy crashes.\nPromotes Heart Health: Helps maintain healthy cholesterol and blood pressure levels.\nHealth Comparisons\nMoringa Tea Health Guide — Simple Guide\tPag\nMORINGA TEA HEALTH GUIDE\nHow to Brew the Perfect Cup\nStep-by-Step Brewing Guide\nBrewing moringa tea is simple and quick. Follow these basic steps for maximum flavor and nutrient retention:\nBoil fresh, clean water to approximately 90°C (194°F).",
+                    "search_score": 0.03333333507180214,
+                    "reranker_score": 2.589127779006958
+                },
+                {
+                    "id": "5_Introduction_to_Yoga-1",
+                    "source": "5_Introduction_to_Yoga.docx",
+                    "content": "Enhances sleep quality and body awareness.\nIntroduction to Yoga — Simple Guide\tPage 4 of 5\nINTRODUCTION TO YOGA\nTips for Starting Your Journey\nHow to Start at Home\nFind a quiet space with a non-slip yoga mat.\nStart with short 10-to-15-minute daily sessions.\nListen to your body and avoid forcing deep stretches.\nConclusion\nYoga is a personal journey, not a competition. Consistency and mindful presence are all you need to reap lifelong benefits.\nIntroduction to Yoga — Simple Guide\tPage 5 of 5",
+                    "search_score": 0.0314980149269104,
+                    "reranker_score": 2.021622657775879
+                }
+            ],
+            "precision_at_k": 1.0,
+            "retrieval_recall": 1.0,
+            "context_relevance": 0.98,
+            "answer_correctness": 1.0,
+            "faithfulness": 1.0,
+            "rewrite_triggered": true,
+            "rewritten_query": "Health benefits of yoga compared with health benefits of moringa tea",
+            "retrieval_attempts": 2,
+            "quality_sufficient": false,
+            "quality_reason": "The context provides separate benefits for yoga and moringa tea, but it does not directly compare them. There is no evidence about relative health benefits, similarities, differences, or which is better for specific outcomes, so it is insufficient to answer the comparison faithfully.",
+            "latency_seconds": 20.109118500025943,
+            "answer": "I could not find enough information in the available knowledge base to answer this question.",
+            "sources": []
+        },
+        {
+            "id": 6,
+            "type": "multi_hop",
+            "query": "How can yoga help with stress, and what caffeine-free drink could support energy?",
+            "expected_information": "Yoga can help reduce stress, including through lower cortisol and conscious breathing. Moringa tea is a caffeine-free drink described as supporting energy.",
+            "strategy": "multi-hop",
+            "retrieved_ids": [
+                "5_Introduction_to_Yoga-0",
+                "1_Moringa_Tea_Health_Guide-0",
+                "1_Moringa_Tea_Health_Guide-2"
+            ],
+            "relevant_ids": [
+                "5_Introduction_to_Yoga-0",
+                "1_Moringa_Tea_Health_Guide-0"
+            ],
+            "reranking_applied": true,
+            "before_reranking_ids": [
+                "5_Introduction_to_Yoga-1",
+                "5_Introduction_to_Yoga-0",
+                "1_Moringa_Tea_Health_Guide-1",
+                "1_Moringa_Tea_Health_Guide-2",
+                "1_Moringa_Tea_Health_Guide-0"
+            ],
+            "after_reranking_ids": [
+                "5_Introduction_to_Yoga-0",
+                "1_Moringa_Tea_Health_Guide-0",
+                "1_Moringa_Tea_Health_Guide-2"
+            ],
+            "before_reranking_chunks": [
+                {
+                    "id": "5_Introduction_to_Yoga-1",
+                    "source": "5_Introduction_to_Yoga.docx",
+                    "content": "Enhances sleep quality and body awareness.\nIntroduction to Yoga — Simple Guide\tPage 4 of 5\nINTRODUCTION TO YOGA\nTips for Starting Your Journey\nHow to Start at Home\nFind a quiet space with a non-slip yoga mat.\nStart with short 10-to-15-minute daily sessions.\nListen to your body and avoid forcing deep stretches.\nConclusion\nYoga is a personal journey, not a competition. Consistency and mindful presence are all you need to reap lifelong benefits.\nIntroduction to Yoga — Simple Guide\tPage 5 of 5",
+                    "search_score": 0.6616093,
+                    "reranker_score": null
+                },
+                {
+                    "id": "5_Introduction_to_Yoga-0",
+                    "source": "5_Introduction_to_Yoga.docx",
+                    "content": "INTRODUCTION TO YOGA\nFoundations of Mindful Movement\nWhat is Yoga?\nYoga is an ancient practice originating in India that unites physical movement, conscious breathing, and mental mindfulness to foster inner peace and physical wellness.\nCore Pillars of Practice\nAsana: Physical postures designed to build strength and flexibility.\nPranayama: Controlled breathing exercises to balance body energy.\nDhyana: Meditation for focus and mental clarity.\nIntroduction to Yoga — Simple Guide\tPage 1 of 5\nINTRODUCTION TO YOGA\nBasic Poses for Beginners\nEssential Yoga Poses\nKey foundational poses suitable for all fitness levels:\nIntroduction to Yoga — Simple Guide\tPage 2 of 5\nINTRODUCTION TO YOGA\nBreathing Techniques\nThe Power of Breath (Pranayama)\nConscious breathing calms the nervous system and improves mental focus during practice.\nIntroduction to Yoga — Simple Guide\tPage 3 of 5\nINTRODUCTION TO YOGA\nBenefits for Mind & Body\nHolistic Health Benefits\nRegular yoga practice delivers widespread physical and mental advantages:\nImproves joint flexibility and core posture balance.\nLowers cortisol levels and helps relieve daily stress.\nEnhances sleep quality and body awareness.",
+                    "search_score": 0.66148895,
+                    "reranker_score": null
+                },
+                {
+                    "id": "1_Moringa_Tea_Health_Guide-1",
+                    "source": "1_Moringa_Tea_Health_Guide.docx",
+                    "content": "Boil fresh, clean water to approximately 90°C (194°F).\nPlace 1 to 2 teaspoons of dried moringa leaves into a tea infuser.\nPour hot water over the leaves and steep for 3 to 5 minutes.\nRemove the infuser, add natural sweeteners or lemon if desired, and enjoy!\nBrewing Tip: Avoid using boiling hot water directly on leaves to prevent scorching and destroying delicate vitamins.\nMORINGA TEA HEALTH GUIDE\nCulinary Uses & Recipes\nCreative Ways to Consume Moringa\nBeyond traditional tea infusions, moringa can be integrated into daily meals easily:\nIced Moringa Lemonade: Chill brewed moringa tea, blend with fresh lemon juice and honey.\nSmoothie Booster: Stir cooled moringa tea or leaf powder directly into green smoothies.\nSoups & Broths: Add steeped tea to vegetable broths for an extra nutrient infusion.\nMORINGA TEA HEALTH GUIDE\nSafety & Summary\nPrecautions & Recommended Dosage\nMoringa tea is generally safe for daily consumption. Drinking 1–2 cups per day is standard for most healthy adults. However, pregnant individuals or those taking blood-sugar medications should consult a doctor first.\nSummary",
+                    "search_score": 0.5422889,
+                    "reranker_score": null
+                },
+                {
+                    "id": "1_Moringa_Tea_Health_Guide-2",
+                    "source": "1_Moringa_Tea_Health_Guide.docx",
+                    "content": "Summary\nMoringa tea is a simple, refreshing, and highly nutritious caffeine-free herbal beverage that fits effortlessly into a healthy modern lifestyle.",
+                    "search_score": 0.6440253,
+                    "reranker_score": null
+                },
+                {
+                    "id": "1_Moringa_Tea_Health_Guide-0",
+                    "source": "1_Moringa_Tea_Health_Guide.docx",
+                    "content": "MORINGA TEA HEALTH GUIDE\nIntroduction & Origins\nWhat is Moringa Tea?\nMoringa tea is a nutrient-packed herbal infusion made from the dried leaves of the Moringa oleifera tree, native to parts of Asia and Africa. Often referred to as the \"miracle tree,\" Moringa has been used for centuries in traditional wellness practices.\nNutritional Profile\nMoringa leaves are exceptionally dense in essential vitamins, minerals, and antioxidants compared to common everyday vegetables.\nMORINGA TEA HEALTH GUIDE\nKey Health Benefits\nTop Health Benefits\nRegular consumption of moringa tea supports overall vitality and well-being through multiple key functions:\nRich in Antioxidants: Helps fight free radicals and oxidative stress.\nSupports Energy: Natural, caffeine-free boost without energy crashes.\nPromotes Heart Health: Helps maintain healthy cholesterol and blood pressure levels.\nHealth Comparisons\nMoringa Tea Health Guide — Simple Guide\tPag\nMORINGA TEA HEALTH GUIDE\nHow to Brew the Perfect Cup\nStep-by-Step Brewing Guide\nBrewing moringa tea is simple and quick. Follow these basic steps for maximum flavor and nutrient retention:\nBoil fresh, clean water to approximately 90°C (194°F).",
+                    "search_score": 0.6086979,
+                    "reranker_score": null
+                }
+            ],
+            "chunks": [
+                {
+                    "id": "5_Introduction_to_Yoga-0",
+                    "source": "5_Introduction_to_Yoga.docx",
+                    "content": "INTRODUCTION TO YOGA\nFoundations of Mindful Movement\nWhat is Yoga?\nYoga is an ancient practice originating in India that unites physical movement, conscious breathing, and mental mindfulness to foster inner peace and physical wellness.\nCore Pillars of Practice\nAsana: Physical postures designed to build strength and flexibility.\nPranayama: Controlled breathing exercises to balance body energy.\nDhyana: Meditation for focus and mental clarity.\nIntroduction to Yoga — Simple Guide\tPage 1 of 5\nINTRODUCTION TO YOGA\nBasic Poses for Beginners\nEssential Yoga Poses\nKey foundational poses suitable for all fitness levels:\nIntroduction to Yoga — Simple Guide\tPage 2 of 5\nINTRODUCTION TO YOGA\nBreathing Techniques\nThe Power of Breath (Pranayama)\nConscious breathing calms the nervous system and improves mental focus during practice.\nIntroduction to Yoga — Simple Guide\tPage 3 of 5\nINTRODUCTION TO YOGA\nBenefits for Mind & Body\nHolistic Health Benefits\nRegular yoga practice delivers widespread physical and mental advantages:\nImproves joint flexibility and core posture balance.\nLowers cortisol levels and helps relieve daily stress.\nEnhances sleep quality and body awareness.",
+                    "search_score": 0.66148895,
+                    "reranker_score": null
+                },
+                {
+                    "id": "1_Moringa_Tea_Health_Guide-0",
+                    "source": "1_Moringa_Tea_Health_Guide.docx",
+                    "content": "MORINGA TEA HEALTH GUIDE\nIntroduction & Origins\nWhat is Moringa Tea?\nMoringa tea is a nutrient-packed herbal infusion made from the dried leaves of the Moringa oleifera tree, native to parts of Asia and Africa. Often referred to as the \"miracle tree,\" Moringa has been used for centuries in traditional wellness practices.\nNutritional Profile\nMoringa leaves are exceptionally dense in essential vitamins, minerals, and antioxidants compared to common everyday vegetables.\nMORINGA TEA HEALTH GUIDE\nKey Health Benefits\nTop Health Benefits\nRegular consumption of moringa tea supports overall vitality and well-being through multiple key functions:\nRich in Antioxidants: Helps fight free radicals and oxidative stress.\nSupports Energy: Natural, caffeine-free boost without energy crashes.\nPromotes Heart Health: Helps maintain healthy cholesterol and blood pressure levels.\nHealth Comparisons\nMoringa Tea Health Guide — Simple Guide\tPag\nMORINGA TEA HEALTH GUIDE\nHow to Brew the Perfect Cup\nStep-by-Step Brewing Guide\nBrewing moringa tea is simple and quick. Follow these basic steps for maximum flavor and nutrient retention:\nBoil fresh, clean water to approximately 90°C (194°F).",
+                    "search_score": 0.6086979,
+                    "reranker_score": null
+                },
+                {
+                    "id": "1_Moringa_Tea_Health_Guide-2",
+                    "source": "1_Moringa_Tea_Health_Guide.docx",
+                    "content": "Summary\nMoringa tea is a simple, refreshing, and highly nutritious caffeine-free herbal beverage that fits effortlessly into a healthy modern lifestyle.",
+                    "search_score": 0.6440253,
+                    "reranker_score": null
+                }
+            ],
+            "precision_at_k": 0.6666666666666666,
+            "retrieval_recall": 1.0,
+            "context_relevance": 0.98,
+            "answer_correctness": 0.98,
+            "faithfulness": 1.0,
+            "rewrite_triggered": false,
+            "rewritten_query": null,
+            "retrieval_attempts": 1,
+            "quality_sufficient": true,
+            "quality_reason": "The context directly supports both parts of the question: yoga can help with stress by lowering cortisol, calming the nervous system through conscious breathing, and improving mental focus; moringa tea is explicitly described as a caffeine-free drink that supports energy.",
+            "latency_seconds": 13.837549399933778,
+            "answer": "Yoga can help with stress by lowering cortisol levels, calming the nervous system through conscious breathing, and improving mental focus. Regular yoga practice also helps relieve daily stress. Source: **5_Introduction_to_Yoga.docx**\n\nA caffeine-free drink that could support energy is **moringa tea**, which is described as a natural, caffeine-free boost without energy crashes. Source: **1_Moringa_Tea_Health_Guide.docx**",
+            "sources": [
+                "5_Introduction_to_Yoga.docx",
+                "1_Moringa_Tea_Health_Guide.docx"
+            ]
+        },
+        {
+            "id": 7,
+            "type": "missing_knowledge",
+            "query": "What is the company's annual leave policy?",
+            "expected_information": "The knowledge base does not contain the company's annual leave policy, so the system should clearly state that it cannot find enough information.",
+            "strategy": "keyword",
+            "retrieved_ids": [],
+            "relevant_ids": [],
+            "reranking_applied": true,
+            "before_reranking_ids": [],
+            "after_reranking_ids": [],
+            "before_reranking_chunks": [],
+            "chunks": [],
+            "precision_at_k": 0.0,
+            "retrieval_recall": null,
+            "context_relevance": 0.0,
+            "answer_correctness": 1.0,
+            "faithfulness": 1.0,
+            "rewrite_triggered": true,
+            "rewritten_query": "company annual leave policy",
+            "retrieval_attempts": 2,
+            "quality_sufficient": false,
+            "quality_reason": "The retrieved context is empty and contains no evidence about the company's annual leave policy.",
+            "latency_seconds": 10.672241599997506,
+            "answer": "I could not find enough information in the available knowledge base to answer this question.",
+            "sources": []
+        },
+        {
+            "id": 8,
+            "type": "noisy_wording",
+            "query": "umm like if im new to plants and keep giving them water a lot lol how do i know if they actually need it",
+            "expected_information": "Check soil moisture by inserting a finger about 1 inch into the soil. The guide also warns that overwatering is a common beginner mistake.",
+            "strategy": "vector",
+            "retrieved_ids": [
+                "3_Beginners_Guide_to_Gardening-1",
+                "3_Beginners_Guide_to_Gardening-0",
+                "5_Introduction_to_Yoga-1"
+            ],
+            "relevant_ids": [
+                "3_Beginners_Guide_to_Gardening-1"
+            ],
+            "reranking_applied": true,
+            "before_reranking_ids": [
+                "3_Beginners_Guide_to_Gardening-1",
+                "3_Beginners_Guide_to_Gardening-0",
+                "1_Moringa_Tea_Health_Guide-1",
+                "1_Moringa_Tea_Health_Guide-0",
+                "5_Introduction_to_Yoga-1"
+            ],
+            "after_reranking_ids": [
+                "3_Beginners_Guide_to_Gardening-1",
+                "3_Beginners_Guide_to_Gardening-0",
+                "5_Introduction_to_Yoga-1"
+            ],
+            "before_reranking_chunks": [
+                {
+                    "id": "3_Beginners_Guide_to_Gardening-1",
+                    "source": "3_Beginners_Guide_to_Gardening.docx",
+                    "content": "Correct Watering Techniques\nOverwatering is the most common mistake made by new gardeners. Follow these key practices:\nCheck soil moisture by inserting a finger 1 inch deep.\nWater deeply at the base of the plant early in the morning.\nEnsure containers have proper drainage holes at the bottom.\nBeginner Gardening Guide — Simple Guide\tPage 4 of 5\nBEGINNER GARDENING GUIDE\nHarvesting & Enjoyment\nKnowing When to Harvest\nHarvest vegetables early and often to encourage the plant to produce more yields throughout the growing season.\nConclusion\nGardening is a continuous learning experience. Enjoy the peaceful process, celebrate small wins, and learn from every season!\nBeginner Gardening Guide — Simple Guide\tPage 5 of 5",
+                    "search_score": 0.6848051,
+                    "reranker_score": null
+                },
+                {
+                    "id": "3_Beginners_Guide_to_Gardening-0",
+                    "source": "3_Beginners_Guide_to_Gardening.docx",
+                    "content": "BEGINNER GARDENING GUIDE\nGetting Started with Gardening\nWelcome to Gardening\nGardening is a rewarding hobby that connects you with nature while producing fresh flowers, herbs, and vegetables. Getting started requires just a few basic elements and patience.\nEssential Gardening Tools\nHand Trowel: For digging small holes and planting seedlings.\nWatering Can: Gentle moisture application for young plants.\nPruning Shears: Trimming dead leaves and harvesting produce.\nBeginner Gardening Guide — Simple Guide\tPage 1 of 5\nBEGINNER GARDENING GUIDE\nSoil & Sun Essentials\nSunlight Requirements\nPlants need varying amounts of light to grow healthily throughout the seasons:\nBeginner Gardening Guide — Simple Guide\tPage 2 of 5\nBEGINNER GARDENING GUIDE\nEasy Plants for Beginners\nBest Vegetables for Beginners\nStart with forgiving plants that grow quickly and yield generous harvests:\nRadishes: Ready to harvest in just 30 days from seed.\nZucchini: Highly productive and simple to maintain.\nBasil: Thrives in containers on bright windowsills.\nBeginner Gardening Guide — Simple Guide\tPage 3 of 5\nBEGINNER GARDENING GUIDE\nWatering & Plant Care\nCorrect Watering Techniques",
+                    "search_score": 0.606665,
+                    "reranker_score": null
+                },
+                {
+                    "id": "1_Moringa_Tea_Health_Guide-1",
+                    "source": "1_Moringa_Tea_Health_Guide.docx",
+                    "content": "Boil fresh, clean water to approximately 90°C (194°F).\nPlace 1 to 2 teaspoons of dried moringa leaves into a tea infuser.\nPour hot water over the leaves and steep for 3 to 5 minutes.\nRemove the infuser, add natural sweeteners or lemon if desired, and enjoy!\nBrewing Tip: Avoid using boiling hot water directly on leaves to prevent scorching and destroying delicate vitamins.\nMORINGA TEA HEALTH GUIDE\nCulinary Uses & Recipes\nCreative Ways to Consume Moringa\nBeyond traditional tea infusions, moringa can be integrated into daily meals easily:\nIced Moringa Lemonade: Chill brewed moringa tea, blend with fresh lemon juice and honey.\nSmoothie Booster: Stir cooled moringa tea or leaf powder directly into green smoothies.\nSoups & Broths: Add steeped tea to vegetable broths for an extra nutrient infusion.\nMORINGA TEA HEALTH GUIDE\nSafety & Summary\nPrecautions & Recommended Dosage\nMoringa tea is generally safe for daily consumption. Drinking 1–2 cups per day is standard for most healthy adults. However, pregnant individuals or those taking blood-sugar medications should consult a doctor first.\nSummary",
+                    "search_score": 0.5465443,
+                    "reranker_score": null
+                },
+                {
+                    "id": "1_Moringa_Tea_Health_Guide-0",
+                    "source": "1_Moringa_Tea_Health_Guide.docx",
+                    "content": "MORINGA TEA HEALTH GUIDE\nIntroduction & Origins\nWhat is Moringa Tea?\nMoringa tea is a nutrient-packed herbal infusion made from the dried leaves of the Moringa oleifera tree, native to parts of Asia and Africa. Often referred to as the \"miracle tree,\" Moringa has been used for centuries in traditional wellness practices.\nNutritional Profile\nMoringa leaves are exceptionally dense in essential vitamins, minerals, and antioxidants compared to common everyday vegetables.\nMORINGA TEA HEALTH GUIDE\nKey Health Benefits\nTop Health Benefits\nRegular consumption of moringa tea supports overall vitality and well-being through multiple key functions:\nRich in Antioxidants: Helps fight free radicals and oxidative stress.\nSupports Energy: Natural, caffeine-free boost without energy crashes.\nPromotes Heart Health: Helps maintain healthy cholesterol and blood pressure levels.\nHealth Comparisons\nMoringa Tea Health Guide — Simple Guide\tPag\nMORINGA TEA HEALTH GUIDE\nHow to Brew the Perfect Cup\nStep-by-Step Brewing Guide\nBrewing moringa tea is simple and quick. Follow these basic steps for maximum flavor and nutrient retention:\nBoil fresh, clean water to approximately 90°C (194°F).",
+                    "search_score": 0.54224557,
+                    "reranker_score": null
+                },
+                {
+                    "id": "5_Introduction_to_Yoga-1",
+                    "source": "5_Introduction_to_Yoga.docx",
+                    "content": "Enhances sleep quality and body awareness.\nIntroduction to Yoga — Simple Guide\tPage 4 of 5\nINTRODUCTION TO YOGA\nTips for Starting Your Journey\nHow to Start at Home\nFind a quiet space with a non-slip yoga mat.\nStart with short 10-to-15-minute daily sessions.\nListen to your body and avoid forcing deep stretches.\nConclusion\nYoga is a personal journey, not a competition. Consistency and mindful presence are all you need to reap lifelong benefits.\nIntroduction to Yoga — Simple Guide\tPage 5 of 5",
+                    "search_score": 0.53511417,
+                    "reranker_score": null
+                }
+            ],
+            "chunks": [
+                {
+                    "id": "3_Beginners_Guide_to_Gardening-1",
+                    "source": "3_Beginners_Guide_to_Gardening.docx",
+                    "content": "Correct Watering Techniques\nOverwatering is the most common mistake made by new gardeners. Follow these key practices:\nCheck soil moisture by inserting a finger 1 inch deep.\nWater deeply at the base of the plant early in the morning.\nEnsure containers have proper drainage holes at the bottom.\nBeginner Gardening Guide — Simple Guide\tPage 4 of 5\nBEGINNER GARDENING GUIDE\nHarvesting & Enjoyment\nKnowing When to Harvest\nHarvest vegetables early and often to encourage the plant to produce more yields throughout the growing season.\nConclusion\nGardening is a continuous learning experience. Enjoy the peaceful process, celebrate small wins, and learn from every season!\nBeginner Gardening Guide — Simple Guide\tPage 5 of 5",
+                    "search_score": 0.6848051,
+                    "reranker_score": null
+                },
+                {
+                    "id": "3_Beginners_Guide_to_Gardening-0",
+                    "source": "3_Beginners_Guide_to_Gardening.docx",
+                    "content": "BEGINNER GARDENING GUIDE\nGetting Started with Gardening\nWelcome to Gardening\nGardening is a rewarding hobby that connects you with nature while producing fresh flowers, herbs, and vegetables. Getting started requires just a few basic elements and patience.\nEssential Gardening Tools\nHand Trowel: For digging small holes and planting seedlings.\nWatering Can: Gentle moisture application for young plants.\nPruning Shears: Trimming dead leaves and harvesting produce.\nBeginner Gardening Guide — Simple Guide\tPage 1 of 5\nBEGINNER GARDENING GUIDE\nSoil & Sun Essentials\nSunlight Requirements\nPlants need varying amounts of light to grow healthily throughout the seasons:\nBeginner Gardening Guide — Simple Guide\tPage 2 of 5\nBEGINNER GARDENING GUIDE\nEasy Plants for Beginners\nBest Vegetables for Beginners\nStart with forgiving plants that grow quickly and yield generous harvests:\nRadishes: Ready to harvest in just 30 days from seed.\nZucchini: Highly productive and simple to maintain.\nBasil: Thrives in containers on bright windowsills.\nBeginner Gardening Guide — Simple Guide\tPage 3 of 5\nBEGINNER GARDENING GUIDE\nWatering & Plant Care\nCorrect Watering Techniques",
+                    "search_score": 0.606665,
+                    "reranker_score": null
+                },
+                {
+                    "id": "5_Introduction_to_Yoga-1",
+                    "source": "5_Introduction_to_Yoga.docx",
+                    "content": "Enhances sleep quality and body awareness.\nIntroduction to Yoga — Simple Guide\tPage 4 of 5\nINTRODUCTION TO YOGA\nTips for Starting Your Journey\nHow to Start at Home\nFind a quiet space with a non-slip yoga mat.\nStart with short 10-to-15-minute daily sessions.\nListen to your body and avoid forcing deep stretches.\nConclusion\nYoga is a personal journey, not a competition. Consistency and mindful presence are all you need to reap lifelong benefits.\nIntroduction to Yoga — Simple Guide\tPage 5 of 5",
+                    "search_score": 0.53511417,
+                    "reranker_score": null
+                }
+            ],
+            "precision_at_k": 0.3333333333333333,
+            "retrieval_recall": 1.0,
+            "context_relevance": 0.96,
+            "answer_correctness": 0.1,
+            "faithfulness": 1.0,
+            "rewrite_triggered": true,
+            "rewritten_query": "How can I tell when my plants actually need water and avoid overwatering them?",
+            "retrieval_attempts": 2,
+            "quality_sufficient": false,
+            "quality_reason": "The question is ambiguous because \"them\" does not clearly identify which plants or specific plants are being referred to, and the context cannot be used to resolve that reference. Although the retrieved text mentions checking soil moisture and overwatering, it does not directly and unambiguously answer the user's question as asked.",
+            "latency_seconds": 15.016347899916582,
+            "answer": "I could not find enough information in the available knowledge base to answer this question.",
+            "sources": []
+        }
+    ]
+}

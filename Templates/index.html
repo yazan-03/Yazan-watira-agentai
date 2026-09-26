@@ -86,12 +86,20 @@
                 </p>
 
                 <button
-                    id="evaluation-button"
-                    class="evaluation-button"
-                >
-                    <span>◈</span>
-                    RAG Evaluation
-                </button>
+                id="evaluation-button"
+                class="evaluation-button"
+            >
+                <span>◈</span>
+                RAG Evaluation
+            </button>
+
+            <button
+                id="adaptive-evaluation-button"
+                class="evaluation-button"
+            >
+                <span>◇</span>
+                Adaptive RAG Evaluation
+            </button>
 
             </div>
 
@@ -353,7 +361,134 @@
             </div>
 
         </section>
+        <!-- =========================
+     ADAPTIVE RAG EVALUATION VIEW
+========================== -->
 
+<section
+id="adaptive-evaluation-panel"
+class="evaluation-panel"
+>
+<div class="evaluation-header">
+
+    <div>
+        <h2>
+            Adaptive RAG Evaluation
+        </h2>
+
+        <p>
+            Evaluation of adaptive retrieval, query rewriting,
+            reranking, multi-hop retrieval, and grounded generation.
+        </p>
+    </div>
+
+    <button
+        id="run-adaptive-evaluation-button"
+        class="run-evaluation-button"
+    >
+        ▶ Run Adaptive Evaluation
+    </button>
+
+</div>
+
+
+<!-- Main Evaluation Metrics -->
+
+<div class="adaptive-metric-grid">
+
+    <div class="metric-card">
+        <span>Precision</span>
+        <strong id="adaptive-precision">—</strong>
+        <small>Relevant retrieved chunks</small>
+    </div>
+
+    <div class="metric-card">
+        <span>Retrieval Recall</span>
+        <strong id="adaptive-recall">—</strong>
+        <small>Relevant chunks successfully retrieved</small>
+    </div>
+
+    <div class="metric-card">
+        <span>Context Relevance</span>
+        <strong id="adaptive-context">—</strong>
+        <small>Question ↔ Retrieved Context</small>
+    </div>
+
+    <div class="metric-card">
+        <span>Answer Correctness</span>
+        <strong id="adaptive-correctness">—</strong>
+        <small>Answer ↔ Expected Information</small>
+    </div>
+
+    <div class="metric-card">
+        <span>Faithfulness</span>
+        <strong id="adaptive-faithfulness">—</strong>
+        <small>Context ↔ Generated Answer</small>
+    </div>
+
+    <div class="metric-card">
+        <span>Retrieval Failure Rate</span>
+        <strong id="adaptive-failure-rate">—</strong>
+        <small>Failed answerable retrievals</small>
+    </div>
+
+</div>
+
+
+<!-- Pipeline Metrics -->
+
+<div class="adaptive-secondary-metrics">
+
+    <div class="adaptive-stat">
+        <span>Rewrite Success Rate</span>
+        <strong id="adaptive-rewrite-success">—</strong>
+    </div>
+
+    <div class="adaptive-stat">
+        <span>Average Retrieval Attempts</span>
+        <strong id="adaptive-attempts">—</strong>
+    </div>
+
+    <div class="adaptive-stat">
+        <span>Average Latency</span>
+        <strong id="adaptive-latency">—</strong>
+    </div>
+
+    <div class="adaptive-stat">
+        <span>Test Cases</span>
+        <strong id="adaptive-test-count">8</strong>
+    </div>
+
+</div>
+
+
+<!-- Test Cases -->
+
+<div class="evaluation-results adaptive-results">
+
+    <div class="results-heading">
+        <div>
+            <h3>
+                Adaptive RAG Test Cases
+            </h3>
+
+            <p>
+                Results across the 8 required evaluation scenarios.
+            </p>
+        </div>
+    </div>
+
+    <div id="adaptive-test-cases">
+
+        <div class="evaluation-empty">
+            Adaptive RAG evaluation results will appear here.
+        </div>
+
+    </div>
+
+</div>
+
+</section>
 
     </main>
 

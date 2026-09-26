@@ -2,6 +2,11 @@
 // DOM ELEMENTS
 // ==========================================
 
+
+const runAdaptiveEvaluationButton =
+    document.getElementById(
+        "run-adaptive-evaluation-button"
+    );
 const assistantButton = document.getElementById("assistant-button");
 const chatBox = document.getElementById("chat-box");
 const input = document.getElementById("message-input");
@@ -11,6 +16,12 @@ const inputWrapper = document.getElementById("chat-input-wrapper");
 const evaluationButton = document.getElementById("evaluation-button");
 const evaluationPanel = document.getElementById("evaluation-panel");
 const runEvaluationButton = document.getElementById("run-evaluation-button");
+
+const adaptiveEvaluationButton =
+    document.getElementById("adaptive-evaluation-button");
+
+const adaptiveEvaluationPanel =
+    document.getElementById("adaptive-evaluation-panel");
 
 const pageTitle = document.getElementById("page-title");
 const pageSubtitle = document.getElementById("page-subtitle");
@@ -723,8 +734,9 @@ assistantButton.addEventListener(
     "click",
     () => {
 
-        // Hide evaluation
+        // Hide evaluation views
         evaluationPanel.classList.remove("active");
+        adaptiveEvaluationPanel.classList.remove("active");
 
         // Show chat
         chatBox.style.display = "flex";
@@ -751,7 +763,10 @@ evaluationButton.addEventListener(
         chatBox.style.display = "none";
         inputWrapper.style.display = "none";
 
-        // Show evaluation
+        // Hide Adaptive Evaluation
+        adaptiveEvaluationPanel.classList.remove("active");
+
+        // Show RAG Evaluation
         evaluationPanel.classList.add("active");
 
         // Change page title
@@ -763,6 +778,35 @@ evaluationButton.addEventListener(
     }
 );
 
+// ==========================================
+// ADAPTIVE RAG EVALUATION VIEW
+// ==========================================
+
+adaptiveEvaluationButton.addEventListener(
+    "click",
+    async () => {
+
+        // Hide chat
+        chatBox.style.display = "none";
+        inputWrapper.style.display = "none";
+
+        // Hide normal RAG Evaluation
+        evaluationPanel.classList.remove("active");
+
+        // Show Adaptive RAG Evaluation
+        adaptiveEvaluationPanel.classList.add("active");
+
+        // Change page title
+        pageTitle.textContent =
+            "Adaptive RAG Evaluation";
+
+        pageSubtitle.textContent =
+            "Evaluate adaptive retrieval, rewriting, reranking and multi-hop RAG";
+
+        // Load ONLY the last saved results
+        await loadAdaptiveEvaluation();
+    }
+);
 
 // ==========================================
 // RUN RAG EVALUATION
@@ -1097,3 +1141,916 @@ runEvaluationButton.addEventListener(
     }
 );
 
+
+// ==========================================
+// ADAPTIVE RAG EVALUATION
+// ==========================================
+
+async function loadAdaptiveEvaluation() {
+
+    const testCasesContainer =
+        document.getElementById(
+            "adaptive-test-cases"
+        );
+
+    try {
+
+        const response = await fetch(
+            "/adaptive-evaluation"
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.error ||
+                "Could not load Adaptive RAG evaluation."
+            );
+        }
+
+        renderAdaptiveEvaluation(data);
+
+    } catch (error) {
+
+        testCasesContainer.innerHTML = `
+            <div class="evaluation-empty">
+                Failed to load Adaptive RAG evaluation:
+                ${escapeHTML(error.message)}
+            </div>
+        `;
+    }
+}
+
+
+// ==========================================
+// RENDER ADAPTIVE EVALUATION
+// ==========================================
+
+function renderAdaptiveEvaluation(data) {
+
+    const summary = data.summary;
+
+    // ------------------------------------------
+    // SUMMARY
+    // ------------------------------------------
+
+    document.getElementById(
+        "adaptive-precision"
+    ).textContent =
+        formatScore(
+            summary.average_precision_at_k
+        );
+
+    document.getElementById(
+        "adaptive-recall"
+    ).textContent =
+        formatScore(
+            summary.average_retrieval_recall
+        );
+
+    document.getElementById(
+        "adaptive-context"
+    ).textContent =
+        formatScore(
+            summary.average_context_relevance
+        );
+
+    document.getElementById(
+        "adaptive-correctness"
+    ).textContent =
+        formatScore(
+            summary.average_answer_correctness
+        );
+
+    document.getElementById(
+        "adaptive-faithfulness"
+    ).textContent =
+        formatScore(
+            summary.average_faithfulness
+        );
+
+    document.getElementById(
+        "adaptive-failure-rate"
+    ).textContent =
+        `${(
+            Number(
+                summary.retrieval_failure_rate
+            ) * 100
+        ).toFixed(0)}%`;
+
+    document.getElementById(
+        "adaptive-rewrite-success"
+    ).textContent =
+        `${(
+            Number(
+                summary.query_rewriting_success_rate
+            ) * 100
+        ).toFixed(0)}%`;
+
+    document.getElementById(
+        "adaptive-attempts"
+    ).textContent =
+        Number(
+            summary.average_retrieval_attempts
+        ).toFixed(2);
+
+    document.getElementById(
+        "adaptive-latency"
+    ).textContent =
+        `${Number(
+            summary.average_latency_seconds
+        ).toFixed(2)} sec`;
+
+    document.getElementById(
+        "adaptive-test-count"
+    ).textContent =
+        summary.total_test_cases;
+
+
+    // ------------------------------------------
+    // TEST CASES
+    // ------------------------------------------
+
+    const testCasesContainer =
+        document.getElementById(
+            "adaptive-test-cases"
+        );
+
+    testCasesContainer.innerHTML = "";
+
+
+    data.results.forEach((result) => {
+
+        const testCard =
+            document.createElement("div");
+
+        testCard.className =
+            "evaluation-test";
+
+
+        // ======================================
+        // HEADER
+        // ======================================
+
+        const header =
+            document.createElement("div");
+
+        header.className =
+            "evaluation-test-header";
+
+
+        const recallDisplay =
+            result.retrieval_recall === null
+                ? "N/A"
+                : formatScore(
+                    result.retrieval_recall
+                );
+
+
+        header.innerHTML = `
+            <div class="evaluation-test-title">
+
+                <strong>
+                    Test Case ${result.id}
+                    ·
+                    ${escapeHTML(result.type)}
+                </strong>
+
+                <span>
+                    ${escapeHTML(result.query)}
+                </span>
+
+            </div>
+
+
+            <div class="evaluation-test-summary">
+
+                <div>
+                    <small>Precision</small>
+                    <strong>
+                        ${formatScore(
+                            result.precision_at_k
+                        )}
+                    </strong>
+                </div>
+
+                <div>
+                    <small>Recall</small>
+                    <strong>
+                        ${recallDisplay}
+                    </strong>
+                </div>
+
+                <div>
+                    <small>Correctness</small>
+                    <strong>
+                        ${formatScore(
+                            result.answer_correctness
+                        )}
+                    </strong>
+                </div>
+
+                <span class="evaluation-arrow">
+                    ▼
+                </span>
+
+            </div>
+        `;
+
+
+        // ======================================
+        // DETAILS
+        // ======================================
+
+        const details =
+            document.createElement("div");
+
+        details.className =
+            "evaluation-test-details";
+
+        details.style.display = "none";
+
+
+        const qualityText =
+            result.quality_sufficient
+                ? "Sufficient"
+                : "Insufficient";
+
+
+        // --------------------------------------
+        // PIPELINE
+        // --------------------------------------
+
+        const pipelineSection =
+            document.createElement("div");
+
+        pipelineSection.className =
+            "evaluation-detail-section";
+
+        pipelineSection.innerHTML = `
+            <h4>Adaptive Retrieval Pipeline</h4>
+
+            <div class="evaluation-detail-metrics">
+
+                <div>
+                    <span>Retrieval Strategy</span>
+                    <strong>
+                        ${escapeHTML(
+                            result.strategy
+                        )}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>Retrieval Attempts</span>
+                    <strong>
+                        ${result.retrieval_attempts}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>Final Quality</span>
+                    <strong>
+                        ${qualityText}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>Re-ranking</span>
+                    <strong>
+                        ${
+                            result.reranking_applied
+                                ? "Applied"
+                                : "Not Applied"
+                        }
+                    </strong>
+                </div>
+
+            </div>
+        `;
+
+
+        // --------------------------------------
+        // EXPECTED INFORMATION
+        // --------------------------------------
+
+        const expectedSection =
+            document.createElement("div");
+
+        expectedSection.className =
+            "evaluation-detail-section";
+
+        expectedSection.innerHTML = `
+            <h4>Expected Information</h4>
+
+            <p>
+                ${escapeHTML(
+                    result.expected_information
+                )}
+            </p>
+        `;
+
+
+        // --------------------------------------
+        // QUERY REWRITING
+        // --------------------------------------
+
+        const rewriteSection =
+            document.createElement("div");
+
+        rewriteSection.className =
+            "evaluation-detail-section";
+
+
+        if (result.rewrite_triggered) {
+
+            rewriteSection.innerHTML = `
+                <h4>Query Rewriting</h4>
+
+                <p>
+                    <strong>Triggered:</strong>
+                    Yes
+                </p>
+
+                <p>
+                    <strong>Rewritten Query:</strong>
+                    ${escapeHTML(
+                        result.rewritten_query ||
+                        "No rewritten query returned."
+                    )}
+                </p>
+            `;
+
+        } else {
+
+            rewriteSection.innerHTML = `
+                <h4>Query Rewriting</h4>
+
+                <p>
+                    <strong>Triggered:</strong>
+                    No
+                </p>
+            `;
+        }
+
+
+        // --------------------------------------
+        // RE-RANKING
+        // --------------------------------------
+
+        const rerankingSection =
+            document.createElement("div");
+
+        rerankingSection.className =
+            "evaluation-detail-section";
+
+
+        let beforeHTML = "";
+
+        if (
+            Array.isArray(
+                result.before_reranking_ids
+            ) &&
+            result.before_reranking_ids.length > 0
+        ) {
+
+            result.before_reranking_ids.forEach(
+                (id, index) => {
+
+                    beforeHTML += `
+                        <div class="evaluation-chunk-id">
+                            ${index + 1}.
+                            ${escapeHTML(id)}
+                        </div>
+                    `;
+                }
+            );
+
+        } else {
+
+            beforeHTML = `
+                <p>
+                    No pre-reranking candidates available.
+                </p>
+            `;
+        }
+
+
+        let afterHTML = "";
+
+        if (
+            Array.isArray(
+                result.after_reranking_ids
+            ) &&
+            result.after_reranking_ids.length > 0
+        ) {
+
+            result.after_reranking_ids.forEach(
+                (id, index) => {
+
+                    afterHTML += `
+                        <div class="evaluation-chunk-id">
+                            ${index + 1}.
+                            ${escapeHTML(id)}
+                        </div>
+                    `;
+                }
+            );
+
+        } else {
+
+            afterHTML = `
+                <p>
+                    No final ranked chunks available.
+                </p>
+            `;
+        }
+
+
+        rerankingSection.innerHTML = `
+            <h4>Re-ranking</h4>
+
+            <p>
+                <strong>Applied:</strong>
+                ${
+                    result.reranking_applied
+                        ? "Yes"
+                        : "No"
+                }
+            </p>
+
+            <div class="evaluation-detail-metrics">
+
+                <div>
+                    <span>
+                        Before Re-ranking
+                    </span>
+
+                    <div>
+                        ${beforeHTML}
+                    </div>
+                </div>
+
+                <div>
+                    <span>
+                        After Re-ranking
+                    </span>
+
+                    <div>
+                        ${afterHTML}
+                    </div>
+                </div>
+
+            </div>
+        `;
+
+
+        // --------------------------------------
+        // QUALITY CHECK
+        // --------------------------------------
+
+        const qualitySection =
+            document.createElement("div");
+
+        qualitySection.className =
+            "evaluation-detail-section";
+
+        qualitySection.innerHTML = `
+            <h4>Retrieval Quality Check</h4>
+
+            <p>
+                <strong>
+                    ${qualityText}
+                </strong>
+            </p>
+
+            <p>
+                ${escapeHTML(
+                    result.quality_reason ||
+                    "No quality reason available."
+                )}
+            </p>
+        `;
+
+
+        // --------------------------------------
+        // FINAL ANSWER
+        // --------------------------------------
+
+        const answerSection =
+            document.createElement("div");
+
+        answerSection.className =
+            "evaluation-detail-section";
+
+        answerSection.innerHTML = `
+            <h4>Final Answer</h4>
+
+            <div class="evaluation-answer">
+                ${escapeHTML(
+                    result.answer
+                )}
+            </div>
+        `;
+
+
+        // --------------------------------------
+        // METRICS
+        // --------------------------------------
+
+        const metricsSection =
+            document.createElement("div");
+
+        metricsSection.className =
+            "evaluation-detail-section";
+
+        metricsSection.innerHTML = `
+            <h4>Evaluation Metrics</h4>
+
+            <div class="evaluation-detail-metrics">
+
+                <div>
+                    <span>Precision@K</span>
+                    <strong>
+                        ${formatScore(
+                            result.precision_at_k
+                        )}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>Retrieval Recall</span>
+                    <strong>
+                        ${recallDisplay}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>Context Relevance</span>
+                    <strong>
+                        ${formatScore(
+                            result.context_relevance
+                        )}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>Answer Correctness</span>
+                    <strong>
+                        ${formatScore(
+                            result.answer_correctness
+                        )}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>Faithfulness</span>
+                    <strong>
+                        ${formatScore(
+                            result.faithfulness
+                        )}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>Latency</span>
+                    <strong>
+                        ${Number(
+                            result.latency_seconds
+                        ).toFixed(2)}s
+                    </strong>
+                </div>
+
+            </div>
+        `;
+
+
+        // --------------------------------------
+        // SOURCES
+        // --------------------------------------
+
+        const sourcesSection =
+            document.createElement("div");
+
+        sourcesSection.className =
+            "evaluation-detail-section";
+
+        let sourcesHTML =
+            "<h4>Sources</h4>";
+
+
+        if (
+            Array.isArray(result.sources) &&
+            result.sources.length > 0
+        ) {
+
+            result.sources.forEach(
+                (source) => {
+
+                    sourcesHTML += `
+                        <p>
+                            📄
+                            ${escapeHTML(source)}
+                        </p>
+                    `;
+                }
+            );
+
+        } else {
+
+            sourcesHTML += `
+                <p>
+                    No supporting sources.
+                </p>
+            `;
+        }
+
+
+        sourcesSection.innerHTML =
+            sourcesHTML;
+
+
+        // --------------------------------------
+        // FINAL CHUNKS
+        // --------------------------------------
+
+        const chunksSection =
+            document.createElement("div");
+
+        chunksSection.className =
+            "evaluation-detail-section";
+
+
+        const chunksTitle =
+            document.createElement("h4");
+
+        chunksTitle.textContent =
+            "Final Retrieved Chunks";
+
+        chunksSection.appendChild(
+            chunksTitle
+        );
+
+
+        if (
+            Array.isArray(result.chunks) &&
+            result.chunks.length > 0
+        ) {
+
+            result.chunks.forEach(
+                (chunk, index) => {
+
+                    const chunkBox =
+                        document.createElement(
+                            "div"
+                        );
+
+                    chunkBox.className =
+                        "evaluation-chunk";
+
+
+                    chunkBox.innerHTML = `
+                        <div class="evaluation-chunk-header">
+
+                            <div>
+
+                                <strong>
+                                    Chunk ${index + 1}
+                                </strong>
+
+                                <span>
+                                    ${escapeHTML(
+                                        chunk.source
+                                    )}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <div class="evaluation-chunk-id">
+                            ${escapeHTML(
+                                chunk.id
+                            )}
+                        </div>
+
+                        <div class="evaluation-chunk-content">
+                            ${escapeHTML(
+                                chunk.content
+                            )}
+                        </div>
+                    `;
+
+
+                    chunksSection.appendChild(
+                        chunkBox
+                    );
+                }
+            );
+
+        } else {
+
+            const emptyChunks =
+                document.createElement("p");
+
+            emptyChunks.textContent =
+                "No chunks retrieved.";
+
+            chunksSection.appendChild(
+                emptyChunks
+            );
+        }
+
+
+        // ======================================
+        // BUILD DETAILS
+        // ======================================
+
+        details.appendChild(
+            pipelineSection
+        );
+
+        details.appendChild(
+            expectedSection
+        );
+
+        details.appendChild(
+            rewriteSection
+        );
+
+        details.appendChild(
+            rerankingSection
+        );
+
+        details.appendChild(
+            qualitySection
+        );
+
+        details.appendChild(
+            answerSection
+        );
+
+        details.appendChild(
+            metricsSection
+        );
+
+        details.appendChild(
+            sourcesSection
+        );
+
+        details.appendChild(
+            chunksSection
+        );
+
+
+        // ======================================
+        // ACCORDION
+        // ======================================
+
+        header.addEventListener(
+            "click",
+            () => {
+
+                const hidden =
+                    details.style.display ===
+                    "none";
+
+                details.style.display =
+                    hidden
+                        ? "block"
+                        : "none";
+
+                const arrow =
+                    header.querySelector(
+                        ".evaluation-arrow"
+                    );
+
+                arrow.textContent =
+                    hidden ? "▲" : "▼";
+            }
+        );
+
+
+        testCard.appendChild(header);
+        testCard.appendChild(details);
+
+        testCasesContainer.appendChild(
+            testCard
+        );
+    });
+}
+
+
+
+// ==========================================
+// RUN NEW ADAPTIVE EVALUATION
+// ==========================================
+
+runAdaptiveEvaluationButton.addEventListener(
+    "click",
+    async () => {
+
+        const originalText =
+            runAdaptiveEvaluationButton.textContent;
+
+        try {
+
+            runAdaptiveEvaluationButton.disabled =
+                true;
+
+            runAdaptiveEvaluationButton.textContent =
+                "Running Adaptive Evaluation...";
+
+
+            // IMPORTANT:
+            // Existing results stay visible while
+            // the new evaluation is running.
+
+            const response = await fetch(
+                "/run-adaptive-evaluation",
+                {
+                    method: "POST"
+                }
+            );
+
+
+            // Protect against Flask returning HTML
+            // instead of JSON.
+            const contentType =
+                response.headers.get(
+                    "content-type"
+                ) || "";
+
+
+            if (
+                !contentType.includes(
+                    "application/json"
+                )
+            ) {
+
+                const errorText =
+                    await response.text();
+
+                console.error(
+                    "Server returned non-JSON:",
+                    errorText
+                );
+
+                throw new Error(
+                    "The server returned an invalid response. " +
+                    "Check the Flask terminal for the error."
+                );
+            }
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.error ||
+                    "Adaptive evaluation failed."
+                );
+            }
+
+
+            // The POST already returns the NEW results.
+            // Render them immediately.
+            renderAdaptiveEvaluation(data);
+
+
+            runAdaptiveEvaluationButton.textContent =
+                "Evaluation Complete ✓";
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Adaptive RAG Evaluation failed:\n" +
+                error.message
+            );
+
+        } finally {
+
+            runAdaptiveEvaluationButton.disabled =
+                false;
+
+
+            setTimeout(() => {
+
+                runAdaptiveEvaluationButton.textContent =
+                    originalText;
+
+            }, 2000);
+        }
+    }
+);
+
+
+// ==========================================
+// LOAD SAVED RESULTS ON PAGE LOAD
+// ==========================================

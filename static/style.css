@@ -1554,3 +1554,135 @@ textarea {
         justify-content: flex-start;
     }
 }
+
+/* =========================
+   ADAPTIVE RAG EVALUATION
+========================= */
+
+#adaptive-evaluation-button {
+    margin-top: 10px;
+}
+
+
+.adaptive-metric-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 16px;
+
+    margin-bottom: 18px;
+}
+
+
+.adaptive-metric-grid .metric-card {
+    background: var(--surface);
+}
+
+
+.adaptive-secondary-metrics {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 14px;
+
+    margin-bottom: 28px;
+}
+
+
+.adaptive-stat {
+    padding: 16px 18px;
+
+    background: #ffffff;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+
+
+.adaptive-stat span {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: var(--muted);
+
+    font-size: 12px;
+}
+
+
+.adaptive-stat strong {
+    color: var(--text);
+
+    font-family: monospace;
+    font-size: 20px;
+}
+
+
+.adaptive-results {
+    background: var(--surface);
+}
+
+
+/* Adaptive test badges */
+
+.adaptive-test-badge {
+    display: inline-flex;
+
+    align-items: center;
+
+    padding: 5px 9px;
+
+    border-radius: 20px;
+
+    background: #f4f3ff;
+    color: #5925dc;
+
+    font-size: 11px;
+    font-weight: 600;
+}
+
+
+.adaptive-strategy-badge {
+    display: inline-flex;
+
+    align-items: center;
+
+    padding: 5px 9px;
+
+    border-radius: 20px;
+
+    background: #eef4ff;
+    color: #3538cd;
+
+    font-size: 11px;
+    font-weight: 600;
+}
+
+
+/* Responsive */
+
+@media (max-width: 1000px) {
+
+    .adaptive-metric-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .adaptive-secondary-metrics {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}
+
+
+@media (max-width: 700px) {
+
+    .adaptive-metric-grid,
+    .adaptive-secondary-metrics {
+        grid-template-columns: 1fr;
+    }
+}
