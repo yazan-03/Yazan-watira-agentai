@@ -2,7 +2,7 @@
 
 Watira AI is an Agentic Retrieval-Augmented Generation (RAG) application that answers questions from a document-based knowledge base and can perform actions through LLM tool calling.
 
-The system uses Azure AI Search for document retrieval, Azure OpenAI for embeddings, answer generation, and tool selection, Flask for the backend API, and a web interface for chat interaction and RAG evaluation.
+The system uses Azure AI Search for document retrieval, Azure OpenAI for embeddings, answer generation, and tool selection, Azure AI Speech for bilingual voice conversations, Flask for the backend API, and a web interface for chat interaction and RAG evaluation.
 
 ## Architecture
 
@@ -77,6 +77,44 @@ Grounded Answer
 - RAG Triad metrics
 - Evaluation dashboard
 - Responsive web interface
+- Arabic and English speech recognition with automatic language identification
+- Same-language neural text-to-speech responses
+- Multi-turn voice conversation history
+- Real-time barge-in that stops the active response when the user speaks
+- Exactly eight voice-agent test scenarios with exportable actual results
+
+## Voice RAG Agent
+
+The **Voice RAG Agent** is a separate demonstration page in the application. It uses the Azure Speech SDK in the browser for low-latency microphone recognition and speech playback while keeping the Speech subscription key on the Flask server.
+
+```text
+Microphone
+    ↓
+Azure Speech-to-Text + Arabic/English Language ID
+    ↓
+Agentic RAG + Conversation History
+    ↓
+Grounded Answer in the Detected Language
+    ↓
+Azure Text-to-Speech
+    ↓
+Speaker
+
+User speech during playback
+    ↓
+Stop current audio immediately (Barge-In)
+    ↓
+Process and speak only the newest turn
+```
+
+The browser requests a short-lived Speech authorization token from `/speech-token`; the Azure Speech key is never returned to the browser. Continuous recognition stays active while TTS audio is playing. A partial recognition event immediately pauses the current audio, and the finalized utterance becomes the next agent turn.
+
+The configured locales and voices are:
+
+- Arabic: `ar-JO` with `ar-JO-SanaNeural`
+- English: `en-US` with `en-US-JennyNeural`
+
+For the most reliable barge-in demonstration, use headphones to prevent the microphone from recognizing speaker echo as an interruption.
 
 ## Agent Tools
 
@@ -174,6 +212,13 @@ Watira/
 
 Create a `.env` file based on `.env-example` and provide the required Azure credentials, deployment names, search service configuration, and index information.
 
+The Voice RAG page additionally requires:
+
+```text
+AZURE_SPEECH_KEY=your-speech-resource-key
+AZURE_SPEECH_REGION=your-speech-resource-region
+```
+
 Never commit API keys or other secrets to source control.
 
 ## Installation
@@ -198,10 +243,14 @@ Then open:
 http://127.0.0.1:5000
 ```
 
-The web interface provides two main views:
+The web interface provides four main views:
 
 - **Document Assistant** – interact with the Agentic RAG system and inspect tool execution.
 - **RAG Evaluation** – run the TruLens evaluation and inspect RAG Triad results.
+- **Adaptive RAG Evaluation** – inspect adaptive retrieval, rewriting, reranking, multi-hop retrieval, and grounded-answer metrics.
+- **Voice RAG Agent** – run an Arabic/English voice session, test barge-in, and record the eight required live-test results.
+
+The browser must be allowed to access the microphone. Localhost is accepted as a secure browser context; deployed versions should use HTTPS.
 
 ## Retrieval Strategy
 

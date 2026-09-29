@@ -9,7 +9,7 @@
 
     <link
         rel="stylesheet"
-        href="{{ url_for('static', filename='style.css') }}"
+        href="{{ url_for('static', filename='style.css', v='voice-rag') }}"
     >
 </head>
 
@@ -99,6 +99,18 @@
             >
                 <span>◇</span>
                 Adaptive RAG Evaluation
+            </button>
+
+            <p class="section-label voice-section-label">
+                VOICE AGENT
+            </p>
+
+            <button
+                id="voice-agent-button"
+                class="evaluation-button"
+            >
+                <span>◉</span>
+                Voice RAG Agent
             </button>
 
             </div>
@@ -490,13 +502,127 @@ class="evaluation-panel"
 
 </section>
 
+        <!-- =========================
+             VOICE RAG AGENT VIEW
+        ========================== -->
+
+        <section
+            id="voice-agent-panel"
+            class="voice-agent-panel"
+        >
+            <div class="voice-header">
+                <div>
+                    <h2>Voice RAG Agent</h2>
+                    <p>
+                        Real-time Arabic and English conversation using Azure Speech.
+                    </p>
+                </div>
+
+                <div class="voice-header-actions">
+                    <button id="clear-voice-history-button" class="secondary-button">
+                        Clear History
+                    </button>
+                    <button id="voice-session-button" class="voice-session-button">
+                        Start Voice Session
+                    </button>
+                </div>
+            </div>
+
+            <div class="voice-architecture" aria-label="Voice agent architecture">
+                <div>🎙️<strong>Microphone</strong></div>
+                <span>→</span>
+                <div><strong>Azure STT</strong><small>Arabic / English LID</small></div>
+                <span>→</span>
+                <div><strong>RAG Agent</strong><small>Conversation history</small></div>
+                <span>→</span>
+                <div><strong>Azure TTS</strong><small>Same-language voice</small></div>
+                <span>→</span>
+                <div>🔊<strong>Speaker</strong></div>
+                <div class="barge-in-path">Barge-In: speech detected → stop audio → process newest turn</div>
+            </div>
+
+            <div class="voice-workspace">
+                <div class="voice-control-card">
+                    <div id="voice-orb" class="voice-orb idle">
+                        <span class="voice-orb-icon">🎙</span>
+                        <span class="voice-waves" aria-hidden="true">
+                            <i></i><i></i><i></i><i></i>
+                        </span>
+                    </div>
+
+                    <div id="voice-status" class="voice-status">Ready</div>
+                    <p id="voice-status-detail" class="voice-status-detail">
+                        Start the session and allow microphone access.
+                    </p>
+
+                    <div class="voice-live-transcript">
+                        <span>Live transcript</span>
+                        <p id="voice-live-text">—</p>
+                    </div>
+
+                    <div class="voice-stats">
+                        <div>
+                            <span>Detected language</span>
+                            <strong id="voice-language">—</strong>
+                        </div>
+                        <div>
+                            <span>Barge-ins</span>
+                            <strong id="voice-interruptions">0</strong>
+                        </div>
+                        <div>
+                            <span>History turns</span>
+                            <strong id="voice-history-count">0</strong>
+                        </div>
+                    </div>
+
+                    <p class="voice-tip">
+                        Tip: headphones provide the most reliable barge-in demo by preventing speaker echo.
+                    </p>
+                </div>
+
+                <div class="voice-conversation-card">
+                    <div class="voice-conversation-heading">
+                        <div>
+                            <h3>Conversation</h3>
+                            <p>The recognizer remains active while the agent speaks.</p>
+                        </div>
+                        <span id="voice-listening-badge" class="voice-listening-badge">Offline</span>
+                    </div>
+
+                    <div id="voice-messages" class="voice-messages">
+                        <div id="voice-empty-state" class="voice-empty-state">
+                            <strong>ابدأ الحديث أو Start speaking</strong>
+                            <span>The agent detects Arabic or English automatically.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="voice-tests-section">
+                <div class="voice-tests-heading">
+                    <div>
+                        <h3>Voice Agent Test Cases</h3>
+                        <p>Exactly 8 required scenarios. Record the actual live-demo result for each one.</p>
+                    </div>
+                    <button id="export-voice-tests-button" class="secondary-button">
+                        Export Results
+                    </button>
+                </div>
+
+                <div id="voice-test-cases" class="voice-test-cases">
+                    <div class="evaluation-empty">Loading voice test cases…</div>
+                </div>
+            </div>
+        </section>
+
     </main>
 
 </div>
 
 
 <script
-    src="{{ url_for('static', filename='script.js') }}"
+    defer
+    src="{{ url_for('static', filename='script.js', v='voice-rag-2') }}"
 ></script>
 
 </body>

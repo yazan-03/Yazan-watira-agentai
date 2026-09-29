@@ -2,7 +2,6 @@
 // DOM ELEMENTS
 // ==========================================
 
-
 const runAdaptiveEvaluationButton =
     document.getElementById(
         "run-adaptive-evaluation-button"
@@ -22,6 +21,12 @@ const adaptiveEvaluationButton =
 
 const adaptiveEvaluationPanel =
     document.getElementById("adaptive-evaluation-panel");
+
+const voiceAgentButton =
+    document.getElementById("voice-agent-button");
+
+const voiceAgentPanel =
+    document.getElementById("voice-agent-panel");
 
 const pageTitle = document.getElementById("page-title");
 const pageSubtitle = document.getElementById("page-subtitle");
@@ -737,6 +742,8 @@ assistantButton.addEventListener(
         // Hide evaluation views
         evaluationPanel.classList.remove("active");
         adaptiveEvaluationPanel.classList.remove("active");
+        voiceAgentPanel.classList.remove("active");
+        stopVoiceSession();
 
         // Show chat
         chatBox.style.display = "flex";
@@ -765,6 +772,8 @@ evaluationButton.addEventListener(
 
         // Hide Adaptive Evaluation
         adaptiveEvaluationPanel.classList.remove("active");
+        voiceAgentPanel.classList.remove("active");
+        stopVoiceSession();
 
         // Show RAG Evaluation
         evaluationPanel.classList.add("active");
@@ -792,6 +801,8 @@ adaptiveEvaluationButton.addEventListener(
 
         // Hide normal RAG Evaluation
         evaluationPanel.classList.remove("active");
+        voiceAgentPanel.classList.remove("active");
+        stopVoiceSession();
 
         // Show Adaptive RAG Evaluation
         adaptiveEvaluationPanel.classList.add("active");
@@ -805,6 +816,27 @@ adaptiveEvaluationButton.addEventListener(
 
         // Load ONLY the last saved results
         await loadAdaptiveEvaluation();
+    }
+);
+
+// ==========================================
+// VOICE RAG AGENT VIEW
+// ==========================================
+
+voiceAgentButton.addEventListener(
+    "click",
+    async () => {
+        chatBox.style.display = "none";
+        inputWrapper.style.display = "none";
+        evaluationPanel.classList.remove("active");
+        adaptiveEvaluationPanel.classList.remove("active");
+        voiceAgentPanel.classList.add("active");
+
+        pageTitle.textContent = "Voice RAG Agent";
+        pageSubtitle.textContent =
+            "Arabic / English voice conversation with real-time barge-in";
+
+        await loadVoiceTestCases();
     }
 );
 
@@ -2049,6 +2081,846 @@ runAdaptiveEvaluationButton.addEventListener(
         }
     }
 );
+
+
+// ==========================================
+// VOICE RAG AGENT
+// ==========================================
+
+const voiceSessionButton =
+    document.getElementById("voice-session-button");
+
+const clearVoiceHistoryButton =
+    document.getElementById("clear-voice-history-button");
+
+const exportVoiceTestsButton =
+    document.getElementById("export-voice-tests-button");
+
+const voiceStatus = document.getElementById("voice-status");
+const voiceStatusDetail = document.getElementById("voice-status-detail");
+const voiceLiveText = document.getElementById("voice-live-text");
+const voiceLanguage = document.getElementById("voice-language");
+const voiceInterruptions = document.getElementById("voice-interruptions");
+const voiceHistoryCount = document.getElementById("voice-history-count");
+const voiceListeningBadge = document.getElementById("voice-listening-badge");
+const voiceMessages = document.getElementById("voice-messages");
+const voiceOrb = document.getElementById("voice-orb");
+
+let speechRecognizer = null;
+let speechTokenCache = null;
+let voiceListening = false;
+let voiceSpeaking = false;
+let voiceAudio = null;
+let voiceAudioUrl = null;
+let voiceSynthesizer = null;
+let voiceFetchController = null;
+let speechTokenRefreshTimer = null;
+let voiceTurnVersion = 0;
+let voiceInterruptionCount = 0;
+let voiceConversationHistory = [];
+let voiceTestCasesData = [];
+let lastRecognizedText = "";
+let lastRecognizedAt = 0;
+
+
+function setVoiceState(state, title, detail) {
+    voiceOrb.className = `voice-orb ${state}`;
+    voiceStatus.textContent = title;
+    voiceStatusDetail.textContent = detail;
+}
+
+
+function languageLabel(locale) {
+    return locale === "ar-JO" ? "العربية (الأردن)" : "English (US)";
+}
+
+
+function inferVoiceLanguage(text) {
+    return /[\u0600-\u06ff]/.test(text) ? "ar-JO" : "en-US";
+}
+
+
+async function getSpeechToken(forceRefresh = false) {
+    const now = Date.now();
+
+    if (
+        !forceRefresh &&
+        speechTokenCache &&
+        speechTokenCache.expiresAt > now
+    ) {
+        return speechTokenCache;
+    }
+
+    const response = await fetch("/speech-token");
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.error || "Azure Speech authentication failed.");
+    }
+
+    speechTokenCache = {
+        token: data.token,
+        region: data.region,
+        // Azure Speech tokens last 10 minutes. Refresh early.
+        expiresAt: now + (8 * 60 * 1000)
+    };
+
+    return speechTokenCache;
+}
+
+
+function createRecognitionConfig(credentials) {
+    const endpoint = new URL(
+        `wss://${credentials.region}.stt.speech.microsoft.com/` +
+        "speech/universal/v2"
+    );
+
+    // Passing an empty string as the second argument is rejected by recent
+    // Speech SDK builds. Omitting it lets us apply the short-lived token below.
+    const speechConfig = SpeechSDK.SpeechConfig.fromEndpoint(endpoint);
+    speechConfig.authorizationToken = credentials.token;
+    speechConfig.outputFormat = SpeechSDK.OutputFormat.Detailed;
+    speechConfig.setProperty(
+        SpeechSDK.PropertyId.SpeechServiceConnection_LanguageIdMode,
+        "Continuous"
+    );
+
+    return speechConfig;
+}
+
+
+let speechSdkLoadPromise = null;
+
+
+function ensureSpeechSdkLoaded() {
+    if (window.SpeechSDK) {
+        return Promise.resolve(window.SpeechSDK);
+    }
+
+    if (speechSdkLoadPromise) {
+        return speechSdkLoadPromise;
+    }
+
+    speechSdkLoadPromise = new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        const timeout = window.setTimeout(() => {
+            script.remove();
+            speechSdkLoadPromise = null;
+            reject(new Error(
+                "Azure Speech SDK took too long to load. Check the internet connection and try again."
+            ));
+        }, 15000);
+
+        script.id = "azure-speech-sdk";
+        script.src = "https://aka.ms/csspeech/jsbrowserpackageraw";
+        script.async = true;
+        script.onload = () => {
+            window.clearTimeout(timeout);
+
+            if (window.SpeechSDK) {
+                resolve(window.SpeechSDK);
+                return;
+            }
+
+            speechSdkLoadPromise = null;
+            reject(new Error("Azure Speech SDK loaded without exposing SpeechSDK."));
+        };
+        script.onerror = () => {
+            window.clearTimeout(timeout);
+            script.remove();
+            speechSdkLoadPromise = null;
+            reject(new Error(
+                "Could not download Azure Speech SDK. Check the internet connection and try again."
+            ));
+        };
+
+        document.head.appendChild(script);
+    });
+
+    return speechSdkLoadPromise;
+}
+
+
+async function startVoiceSession() {
+    if (voiceListening) {
+        stopVoiceSession();
+        return;
+    }
+
+    voiceSessionButton.disabled = true;
+    setVoiceState(
+        "connecting",
+        "Connecting…",
+        "Requesting Azure Speech access and microphone permission."
+    );
+
+    try {
+        await ensureSpeechSdkLoaded();
+        const credentials = await getSpeechToken();
+        const speechConfig = createRecognitionConfig(credentials);
+        const languageConfig =
+            SpeechSDK.AutoDetectSourceLanguageConfig.fromLanguages([
+                "ar-JO",
+                "en-US"
+            ]);
+        const audioConfig =
+            SpeechSDK.AudioConfig.fromDefaultMicrophoneInput();
+
+        speechRecognizer = SpeechSDK.SpeechRecognizer.FromConfig(
+            speechConfig,
+            languageConfig,
+            audioConfig
+        );
+
+        speechRecognizer.recognizing = (_, event) => {
+            const partialText = (event.result.text || "").trim();
+
+            if (!partialText) {
+                return;
+            }
+
+            voiceLiveText.textContent = partialText;
+
+            // The recognizer stays active during TTS. Any new speech pauses the
+            // current audio immediately, before the utterance is finalized.
+            if (voiceSpeaking || voiceAudio || voiceSynthesizer) {
+                stopVoicePlayback(true);
+                setVoiceState(
+                    "listening",
+                    "Interrupted — listening",
+                    "The previous answer stopped. Finish your new question."
+                );
+            }
+        };
+
+        speechRecognizer.recognized = (_, event) => {
+            if (
+                event.result.reason !==
+                SpeechSDK.ResultReason.RecognizedSpeech
+            ) {
+                return;
+            }
+
+            const text = (event.result.text || "").trim();
+
+            if (!text) {
+                return;
+            }
+
+            // Avoid submitting the same final event twice after reconnects.
+            const now = Date.now();
+
+            if (
+                text === lastRecognizedText &&
+                now - lastRecognizedAt < 1500
+            ) {
+                return;
+            }
+
+            lastRecognizedText = text;
+            lastRecognizedAt = now;
+
+            let detectedLanguage = inferVoiceLanguage(text);
+
+            try {
+                const languageResult =
+                    SpeechSDK.AutoDetectSourceLanguageResult.fromResult(
+                        event.result
+                    );
+
+                if (["ar-JO", "en-US"].includes(languageResult.language)) {
+                    detectedLanguage = languageResult.language;
+                }
+            } catch (error) {
+                console.warn("Language result unavailable:", error);
+            }
+
+            voiceLiveText.textContent = text;
+            voiceLanguage.textContent = languageLabel(detectedLanguage);
+            handleVoiceUtterance(text, detectedLanguage);
+        };
+
+        speechRecognizer.canceled = (_, event) => {
+            console.error("Speech recognition canceled:", event.errorDetails);
+
+            if (event.errorDetails) {
+                setVoiceState(
+                    "error",
+                    "Recognition stopped",
+                    event.errorDetails
+                );
+            }
+        };
+
+        speechRecognizer.sessionStopped = () => {
+            if (voiceListening) {
+                voiceListening = false;
+                updateVoiceSessionControls();
+            }
+        };
+
+        speechRecognizer.startContinuousRecognitionAsync(
+            () => {
+                voiceListening = true;
+                scheduleSpeechTokenRefresh();
+                updateVoiceSessionControls();
+                setVoiceState(
+                    "listening",
+                    "Listening",
+                    "Speak naturally in Arabic or English."
+                );
+            },
+            (error) => {
+                console.error("Could not start recognition:", error);
+                voiceListening = false;
+                closeSpeechRecognizer();
+                updateVoiceSessionControls();
+                setVoiceState(
+                    "error",
+                    "Could not start recognition",
+                    String(error)
+                );
+            }
+        );
+
+    } catch (error) {
+        console.error(error);
+        setVoiceState("error", "Could not start", error.message);
+        closeSpeechRecognizer();
+    } finally {
+        voiceSessionButton.disabled = false;
+    }
+}
+
+
+function scheduleSpeechTokenRefresh() {
+    if (speechTokenRefreshTimer) {
+        clearInterval(speechTokenRefreshTimer);
+    }
+
+    speechTokenRefreshTimer = setInterval(async () => {
+        if (!speechRecognizer) {
+            return;
+        }
+
+        try {
+            const credentials = await getSpeechToken(true);
+            speechRecognizer.authorizationToken = credentials.token;
+        } catch (error) {
+            console.warn("Speech token refresh failed:", error);
+        }
+    }, 8 * 60 * 1000);
+}
+
+
+function updateVoiceSessionControls() {
+    voiceSessionButton.textContent = voiceListening
+        ? "Stop Voice Session"
+        : "Start Voice Session";
+
+    voiceSessionButton.classList.toggle("stop", voiceListening);
+    voiceListeningBadge.textContent = voiceListening ? "Listening" : "Offline";
+    voiceListeningBadge.classList.toggle("active", voiceListening);
+}
+
+
+function closeSpeechRecognizer() {
+    if (!speechRecognizer) {
+        return;
+    }
+
+    const recognizerToClose = speechRecognizer;
+    speechRecognizer = null;
+
+    try {
+        recognizerToClose.stopContinuousRecognitionAsync(
+            () => recognizerToClose.close(),
+            () => recognizerToClose.close()
+        );
+    } catch (error) {
+        console.warn("Recognizer cleanup failed:", error);
+        recognizerToClose.close();
+    }
+}
+
+
+function stopVoiceSession() {
+    if (
+        !voiceListening &&
+        !speechRecognizer &&
+        !voiceSpeaking &&
+        !voiceSynthesizer &&
+        !voiceFetchController
+    ) {
+        return;
+    }
+
+    voiceListening = false;
+
+    if (speechTokenRefreshTimer) {
+        clearInterval(speechTokenRefreshTimer);
+        speechTokenRefreshTimer = null;
+    }
+
+    closeSpeechRecognizer();
+    stopVoicePlayback(false);
+
+    if (voiceFetchController) {
+        voiceFetchController.abort();
+        voiceFetchController = null;
+    }
+
+    updateVoiceSessionControls();
+    setVoiceState(
+        "idle",
+        "Ready",
+        "Start the session and allow microphone access."
+    );
+}
+
+
+function stopVoicePlayback(countAsInterruption) {
+    const hadActiveSpeech = Boolean(
+        voiceSpeaking || voiceAudio || voiceSynthesizer
+    );
+
+    // Invalidates pending synthesis callbacks as well as currently playing audio.
+    voiceTurnVersion += 1;
+
+    if (voiceAudio) {
+        voiceAudio.pause();
+        voiceAudio.currentTime = 0;
+        voiceAudio = null;
+    }
+
+    if (voiceAudioUrl) {
+        URL.revokeObjectURL(voiceAudioUrl);
+        voiceAudioUrl = null;
+    }
+
+    if (voiceSynthesizer) {
+        try {
+            voiceSynthesizer.close();
+        } catch (error) {
+            console.warn("Synthesizer cleanup failed:", error);
+        }
+
+        voiceSynthesizer = null;
+    }
+
+    voiceSpeaking = false;
+
+    if (countAsInterruption && hadActiveSpeech) {
+        voiceInterruptionCount += 1;
+        voiceInterruptions.textContent = voiceInterruptionCount;
+    }
+}
+
+
+async function handleVoiceUtterance(text, language) {
+    stopVoicePlayback(false);
+
+    if (voiceFetchController) {
+        voiceFetchController.abort();
+    }
+
+    const requestHistory = voiceConversationHistory.slice(-12);
+
+    voiceConversationHistory.push({
+        role: "user",
+        content: text,
+        language
+    });
+
+    addVoiceMessage("user", text, language);
+    updateVoiceHistoryCount();
+
+    const currentVersion = ++voiceTurnVersion;
+    voiceFetchController = new AbortController();
+
+    setVoiceState(
+        "thinking",
+        language === "ar-JO" ? "جاري التفكير…" : "Thinking…",
+        language === "ar-JO"
+            ? "يتم البحث في قاعدة المعرفة."
+            : "Searching the knowledge base."
+    );
+
+    try {
+        const response = await fetch("/voice-chat", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                message: text,
+                language,
+                history: requestHistory
+            }),
+            signal: voiceFetchController.signal
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Voice agent request failed.");
+        }
+
+        if (currentVersion !== voiceTurnVersion) {
+            return;
+        }
+
+        const answerLanguage = data.language || language;
+
+        voiceConversationHistory.push({
+            role: "assistant",
+            content: data.answer,
+            language: answerLanguage
+        });
+
+        addVoiceMessage(
+            "assistant",
+            data.answer,
+            answerLanguage,
+            data.sources || []
+        );
+        updateVoiceHistoryCount();
+
+        await speakVoiceAnswer(data.answer, answerLanguage, currentVersion);
+
+    } catch (error) {
+        if (error.name === "AbortError") {
+            return;
+        }
+
+        console.error(error);
+        addVoiceMessage("assistant", error.message, language, [], true);
+        setVoiceState("error", "Voice agent error", error.message);
+    }
+}
+
+
+async function speakVoiceAnswer(text, language, turnVersion) {
+    const credentials = await getSpeechToken();
+
+    if (turnVersion !== voiceTurnVersion) {
+        return;
+    }
+
+    const speechConfig = SpeechSDK.SpeechConfig.fromAuthorizationToken(
+        credentials.token,
+        credentials.region
+    );
+
+    speechConfig.speechSynthesisLanguage = language;
+    speechConfig.speechSynthesisVoiceName =
+        language === "ar-JO"
+            ? "ar-JO-SanaNeural"
+            : "en-US-JennyNeural";
+    speechConfig.speechSynthesisOutputFormat =
+        SpeechSDK.SpeechSynthesisOutputFormat.Riff24Khz16BitMonoPcm;
+
+    voiceSynthesizer = new SpeechSDK.SpeechSynthesizer(
+        speechConfig,
+        null
+    );
+
+    setVoiceState(
+        "thinking",
+        language === "ar-JO" ? "جاري تجهيز الصوت…" : "Preparing speech…",
+        language === "ar-JO"
+            ? "سيبقى الميكروفون فعالًا للمقاطعة."
+            : "The microphone remains active for barge-in."
+    );
+
+    await new Promise((resolve, reject) => {
+        const synthesizerForTurn = voiceSynthesizer;
+
+        synthesizerForTurn.speakTextAsync(
+            text,
+            (result) => {
+                if (voiceSynthesizer === synthesizerForTurn) {
+                    voiceSynthesizer = null;
+                }
+
+                synthesizerForTurn.close();
+
+                if (turnVersion !== voiceTurnVersion) {
+                    resolve();
+                    return;
+                }
+
+                if (
+                    result.reason !==
+                    SpeechSDK.ResultReason.SynthesizingAudioCompleted
+                ) {
+                    reject(new Error("Azure Speech did not return audio."));
+                    return;
+                }
+
+                const audioBlob = new Blob(
+                    [result.audioData],
+                    {type: "audio/wav"}
+                );
+
+                voiceAudioUrl = URL.createObjectURL(audioBlob);
+                voiceAudio = new Audio(voiceAudioUrl);
+                voiceSpeaking = true;
+
+                voiceAudio.onplay = () => {
+                    setVoiceState(
+                        "speaking",
+                        language === "ar-JO" ? "يتحدث الآن" : "Speaking",
+                        language === "ar-JO"
+                            ? "يمكنك مقاطعته في أي وقت."
+                            : "You can interrupt at any time."
+                    );
+                };
+
+                voiceAudio.onended = () => {
+                    cleanupFinishedVoiceAudio();
+                    setVoiceState(
+                        "listening",
+                        language === "ar-JO" ? "أستمع إليك" : "Listening",
+                        language === "ar-JO"
+                            ? "اطرح سؤالًا آخر."
+                            : "Ask a follow-up question."
+                    );
+                    resolve();
+                };
+
+                voiceAudio.onerror = () => {
+                    cleanupFinishedVoiceAudio();
+                    reject(new Error("The browser could not play the response."));
+                };
+
+                voiceAudio.play().catch((error) => {
+                    cleanupFinishedVoiceAudio();
+                    reject(error);
+                });
+            },
+            (error) => {
+                if (voiceSynthesizer === synthesizerForTurn) {
+                    voiceSynthesizer = null;
+                }
+
+                synthesizerForTurn.close();
+                reject(new Error(String(error)));
+            }
+        );
+    });
+}
+
+
+function cleanupFinishedVoiceAudio() {
+    voiceSpeaking = false;
+    voiceAudio = null;
+
+    if (voiceAudioUrl) {
+        URL.revokeObjectURL(voiceAudioUrl);
+        voiceAudioUrl = null;
+    }
+}
+
+
+function addVoiceMessage(role, text, language, sources = [], isError = false) {
+    const emptyState = document.getElementById("voice-empty-state");
+
+    if (emptyState) {
+        emptyState.remove();
+    }
+
+    const row = document.createElement("div");
+    row.className = `voice-message-row ${role}`;
+    row.dir = language === "ar-JO" ? "rtl" : "ltr";
+
+    const meta = document.createElement("div");
+    meta.className = "voice-message-meta";
+    meta.textContent = `${role === "user" ? "You" : "Watira"} · ${languageLabel(language)}`;
+
+    const bubble = document.createElement("div");
+    bubble.className = `voice-message${isError ? " error" : ""}`;
+    bubble.textContent = text;
+
+    row.appendChild(meta);
+    row.appendChild(bubble);
+
+    if (sources.length > 0) {
+        const sourceList = document.createElement("div");
+        sourceList.className = "voice-message-sources";
+        sourceList.textContent = `Sources: ${sources.join(", ")}`;
+        row.appendChild(sourceList);
+    }
+
+    voiceMessages.appendChild(row);
+    voiceMessages.scrollTop = voiceMessages.scrollHeight;
+}
+
+
+function updateVoiceHistoryCount() {
+    voiceHistoryCount.textContent = voiceConversationHistory.length;
+}
+
+
+function clearVoiceHistory() {
+    stopVoicePlayback(false);
+    voiceConversationHistory = [];
+    voiceMessages.innerHTML = `
+        <div id="voice-empty-state" class="voice-empty-state">
+            <strong>ابدأ الحديث أو Start speaking</strong>
+            <span>The agent detects Arabic or English automatically.</span>
+        </div>
+    `;
+    voiceLiveText.textContent = "—";
+    voiceLanguage.textContent = "—";
+    updateVoiceHistoryCount();
+
+    if (voiceListening) {
+        setVoiceState("listening", "Listening", "Speak in Arabic or English.");
+    }
+}
+
+
+async function loadVoiceTestCases() {
+    if (voiceTestCasesData.length > 0) {
+        renderVoiceTestCases();
+        return;
+    }
+
+    const container = document.getElementById("voice-test-cases");
+
+    try {
+        const response = await fetch("/voice-test-cases");
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Could not load test cases.");
+        }
+
+        voiceTestCasesData = data.test_cases;
+        renderVoiceTestCases();
+    } catch (error) {
+        container.innerHTML = `
+            <div class="evaluation-empty">${escapeHTML(error.message)}</div>
+        `;
+    }
+}
+
+
+function getStoredVoiceTestResults() {
+    try {
+        return JSON.parse(
+            localStorage.getItem("watiraVoiceTestResults") || "{}"
+        );
+    } catch (error) {
+        return {};
+    }
+}
+
+
+function saveVoiceTestResult(testId, status, actual) {
+    const results = getStoredVoiceTestResults();
+    results[testId] = {
+        status,
+        actual,
+        tested_at: new Date().toISOString()
+    };
+    localStorage.setItem("watiraVoiceTestResults", JSON.stringify(results));
+}
+
+
+function renderVoiceTestCases() {
+    const container = document.getElementById("voice-test-cases");
+    const savedResults = getStoredVoiceTestResults();
+    container.innerHTML = "";
+
+    voiceTestCasesData.forEach((testCase) => {
+        const saved = savedResults[testCase.id] || {
+            status: "not_run",
+            actual: ""
+        };
+        const card = document.createElement("article");
+        card.className = "voice-test-card";
+
+        card.innerHTML = `
+            <div class="voice-test-title">
+                <span>Test ${testCase.id}</span>
+                <strong>${escapeHTML(testCase.scenario)}</strong>
+            </div>
+            <div class="voice-test-detail">
+                <small>Test utterance</small>
+                <p>${escapeHTML(testCase.utterance)}</p>
+            </div>
+            <div class="voice-test-detail">
+                <small>Expected result</small>
+                <p>${escapeHTML(testCase.expected)}</p>
+            </div>
+        `;
+
+        const resultArea = document.createElement("div");
+        resultArea.className = "voice-test-result";
+
+        const statusSelect = document.createElement("select");
+        [
+            ["not_run", "Not run"],
+            ["passed", "Passed"],
+            ["failed", "Failed"]
+        ].forEach(([value, label]) => {
+            const option = document.createElement("option");
+            option.value = value;
+            option.textContent = label;
+            option.selected = saved.status === value;
+            statusSelect.appendChild(option);
+        });
+
+        const actualInput = document.createElement("textarea");
+        actualInput.rows = 2;
+        actualInput.placeholder = "Record the actual result or limitation…";
+        actualInput.value = saved.actual || "";
+
+        const persist = () => saveVoiceTestResult(
+            testCase.id,
+            statusSelect.value,
+            actualInput.value.trim()
+        );
+
+        statusSelect.addEventListener("change", persist);
+        actualInput.addEventListener("change", persist);
+
+        resultArea.appendChild(statusSelect);
+        resultArea.appendChild(actualInput);
+        card.appendChild(resultArea);
+        container.appendChild(card);
+    });
+}
+
+
+function exportVoiceTestResults() {
+    const savedResults = getStoredVoiceTestResults();
+    const exportedResults = voiceTestCasesData.map((testCase) => ({
+        ...testCase,
+        actual_result: savedResults[testCase.id] || {
+            status: "not_run",
+            actual: "",
+            tested_at: null
+        }
+    }));
+    const blob = new Blob(
+        [JSON.stringify(exportedResults, null, 2)],
+        {type: "application/json"}
+    );
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "voice_rag_test_results.json";
+    link.click();
+    URL.revokeObjectURL(url);
+}
+
+
+voiceSessionButton.addEventListener("click", startVoiceSession);
+clearVoiceHistoryButton.addEventListener("click", clearVoiceHistory);
+exportVoiceTestsButton.addEventListener("click", exportVoiceTestResults);
 
 
 // ==========================================

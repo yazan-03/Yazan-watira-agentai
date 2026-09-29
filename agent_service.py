@@ -154,11 +154,7 @@ def execute_tool(tool_name, arguments):
         return {"error": f"Unknown tool: {tool_name}"}
 
 
-def run_agent(user_message):
-    messages = [
-        {
-    "role": "system",
-    "content": """
+AGENT_SYSTEM_PROMPT = """
 You are a helpful AI assistant that uses tools to answer questions and perform actions.
 
 Rules:
@@ -235,12 +231,63 @@ Rules:
 
 24. Don't answer any outside knowledge base question.
 """
-}  ,
+
+
+def run_agent(
+    user_message,
+    conversation_history=None,
+    response_language=None
+):
+    """Run the tool-calling agent with optional multi-turn context."""
+
+    system_prompt = AGENT_SYSTEM_PROMPT
+
+    if response_language == "ar-JO":
+        system_prompt += """
+
+Voice conversation requirements:
+- Reply in Arabic because the user's current utterance is Arabic.
+- Keep the answer natural when spoken aloud.
+- You may translate the search query into English when that improves retrieval,
+  but the final answer must remain in Arabic.
+"""
+    elif response_language == "en-US":
+        system_prompt += """
+
+Voice conversation requirements:
+- Reply in English because the user's current utterance is English.
+- Keep the answer natural when spoken aloud.
+"""
+
+    messages = [
         {
-            "role": "user",
-            "content": user_message
+            "role": "system",
+            "content": system_prompt
         }
     ]
+
+    # Only user/assistant text turns are accepted from the browser. Tool messages
+    # are always produced and trusted on the server during the current request.
+    for item in (conversation_history or [])[-12:]:
+        if not isinstance(item, dict):
+            continue
+
+        role = item.get("role")
+        content = item.get("content")
+
+        if role in {"user", "assistant"} and isinstance(content, str):
+            content = content.strip()
+
+            if content:
+                messages.append({
+                    "role": role,
+                    "content": content[:6000]
+                })
+
+    messages.append({
+        "role": "user",
+        "content": user_message
+    })
 
     # NEW: containers for UI data
     tool_trace = []
@@ -257,7 +304,11 @@ Rules:
     assistant_message = response.choices[0].message
     messages.append(assistant_message)
 
-    while assistant_message.tool_calls:
+    tool_rounds = 0
+
+    while assistant_message.tool_calls and tool_rounds < 8:
+
+        tool_rounds += 1
 
         for tool_call in assistant_message.tool_calls:
             tool_name = tool_call.function.name
@@ -328,43 +379,3 @@ Rules:
         "sources": sources,
         "ranking": ranking
     }
-
-    while assistant_message.tool_calls:
-
-        for tool_call in assistant_message.tool_calls:
-            tool_name = tool_call.function.name
-            arguments = json.loads(tool_call.function.arguments)
-
-            print(f"Agent selected tool: {tool_name}")
-            print(f"Arguments: {arguments}")
-
-            try:
-                tool_result = execute_tool(
-                    tool_name,
-                    arguments
-                )
-            except Exception as e:
-                tool_result = {
-                    "error": str(e)
-                }
-
-            messages.append({
-                "role": "tool",
-                "tool_call_id": tool_call.id,
-                "content": json.dumps(
-                    tool_result,
-                    ensure_ascii=False
-                )
-            })
-
-        response = client.chat.completions.create(
-            model=GPT_DEPLOYMENT,
-            messages=messages,
-            tools=tool_definitions,
-            tool_choice="auto"
-        )
-
-        assistant_message = response.choices[0].message
-        messages.append(assistant_message)
-
-    return assistant_message.content    
