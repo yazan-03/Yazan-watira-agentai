@@ -43,6 +43,106 @@ def create_embedding(text):
     return response.data[0].embedding
 
 
+# --------------------------------------------------
+# VECTOR SEARCH
+# --------------------------------------------------
+
+def vector_search(question, top_k=5):
+
+    question_vector = create_embedding(question)
+
+    vector_query = VectorizedQuery(
+        vector=question_vector,
+        k_nearest_neighbors=top_k,
+        fields="contentVector"
+    )
+
+    results = search_client.search(
+        search_text=None,
+        vector_queries=[vector_query],
+        select=["id", "content", "source"],
+        top=top_k
+    )
+
+    retrieved_chunks = []
+
+    for result in results:
+        retrieved_chunks.append(
+            {
+                "id": result["id"],
+                "content": result["content"],
+                "source": result["source"],
+                "score": result["@search.score"],
+                "reranker_score": None
+            }
+        )
+
+    return retrieved_chunks
+
+
+# --------------------------------------------------
+# KEYWORD SEARCH
+# --------------------------------------------------
+
+def keyword_search(question, top_k=5):
+
+    results = search_client.search(
+        search_text=question,
+        select=["id", "content", "source"],
+        top=top_k
+    )
+
+    retrieved_chunks = []
+
+    for result in results:
+        retrieved_chunks.append(
+            {
+                "id": result["id"],
+                "content": result["content"],
+                "source": result["source"],
+                "score": result["@search.score"],
+                "reranker_score": None
+            }
+        )
+
+    return retrieved_chunks
+
+
+# --------------------------------------------------
+# METADATA-FILTERED SEARCH
+# --------------------------------------------------
+
+def metadata_search(question, source, top_k=5):
+
+    results = search_client.search(
+        search_text=question,
+        filter=f"source eq '{source}'",
+        query_type="semantic",
+        semantic_configuration_name="semantic-config",
+        select=["id", "content", "source"],
+        top=top_k
+    )
+
+    retrieved_chunks = []
+
+    for result in results:
+        retrieved_chunks.append(
+            {
+                "id": result["id"],
+                "content": result["content"],
+                "source": result["source"],
+                "score": result["@search.score"],
+                "reranker_score": result.get("@search.reranker_score")
+            }
+        )
+
+    return retrieved_chunks
+
+
+# --------------------------------------------------
+# HYBRID SEARCH + SEMANTIC RERANKING
+# --------------------------------------------------
+
 def hybrid_search(question, top_k=5):
 
     question_vector = create_embedding(question)
@@ -84,20 +184,38 @@ if __name__ == "__main__":
 
     question = input("Ask a question: ")
 
-    results = hybrid_search(question)
+    print("\nVECTOR SEARCH")
+    vector_results = vector_search(question)
 
-    print("\nTop Results:\n")
-
-    for i, result in enumerate(results, start=1):
-
+    for i, result in enumerate(vector_results, start=1):
         print("=" * 80)
+        print(f"Result {i}")
+        print(f"Source: {result['source']}")
+        print(f"Score: {result['score']}")
+        print("\nContent:")
+        print(result["content"])
 
+
+    print("\n\nKEYWORD SEARCH")
+    keyword_results = keyword_search(question)
+
+    for i, result in enumerate(keyword_results, start=1):
+        print("=" * 80)
+        print(f"Result {i}")
+        print(f"Source: {result['source']}")
+        print(f"Score: {result['score']}")
+        print("\nContent:")
+        print(result["content"])
+
+
+    print("\n\nHYBRID SEARCH")
+    hybrid_results = hybrid_search(question)
+
+    for i, result in enumerate(hybrid_results, start=1):
+        print("=" * 80)
         print(f"Result {i}")
         print(f"Source: {result['source']}")
         print(f"Hybrid Score: {result['score']}")
         print(f"Semantic Score: {result['reranker_score']}")
-
         print("\nContent:")
         print(result["content"])
-
-        print()

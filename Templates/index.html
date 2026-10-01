@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Watira AI</title>
 
     <link
         rel="stylesheet"
-        href="{{ url_for('static', filename='style.css') }}"
+        href="{{ url_for('static', filename='style.css', v='voice-rag') }}"
     >
 </head>
 
@@ -15,41 +17,106 @@
 
 <div class="app">
 
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+
     <aside class="sidebar">
 
         <div class="brand">
-            <div class="brand-icon">W</div>
+
+            <div class="brand-icon">
+                W
+            </div>
 
             <div>
                 <h2>Watira AI</h2>
                 <span>Knowledge Assistant</span>
             </div>
+
         </div>
+
 
         <div class="sidebar-content">
 
-            <p class="section-label">KNOWLEDGE BASE</p>
+            <p class="section-label">
+                KNOWLEDGE BASE
+            </p>
+
 
             <div class="knowledge-card">
+
                 <div class="status-dot"></div>
 
                 <div>
                     <strong>5 Documents</strong>
                     <span>Azure AI Search connected</span>
                 </div>
+
             </div>
+
 
             <div class="info-card">
                 <span>Retrieval</span>
                 <strong>Hybrid Search</strong>
             </div>
 
+
             <div class="info-card">
                 <span>Model</span>
                 <strong>GPT-5.4-mini</strong>
             </div>
 
+
+            <!-- RAG Evaluation Navigation -->
+
+            <div class="evaluation-nav">
+
+
+                <button
+                id="assistant-button"
+                class="evaluation-button"
+                >
+                <span>✦</span>
+                Document Assistant
+            </button>
+
+                <p class="section-label">
+                    EVALUATION
+                </p>
+
+                <button
+                id="evaluation-button"
+                class="evaluation-button"
+            >
+                <span>◈</span>
+                RAG Evaluation
+            </button>
+
+            <button
+                id="adaptive-evaluation-button"
+                class="evaluation-button"
+            >
+                <span>◇</span>
+                Adaptive RAG Evaluation
+            </button>
+
+            <p class="section-label voice-section-label">
+                VOICE AGENT
+            </p>
+
+            <button
+                id="voice-agent-button"
+                class="evaluation-button"
+            >
+                <span>◉</span>
+                Voice RAG Agent
+            </button>
+
+            </div>
+
         </div>
+
 
         <div class="sidebar-footer">
             Grounded responses from your documents
@@ -58,14 +125,27 @@
     </aside>
 
 
+    <!-- =========================
+         MAIN AREA
+    ========================== -->
+
     <main class="chat-area">
+
+
+        <!-- TOP BAR -->
 
         <header class="topbar">
 
             <div>
-                <h1>Document Assistant</h1>
-                <p>Ask questions about your knowledge base</p>
+                <h1 id="page-title">
+                    Document Assistant
+                </h1>
+
+                <p id="page-subtitle">
+                    Ask questions about your knowledge base
+                </p>
             </div>
+
 
             <div class="online-status">
                 <span></span>
@@ -75,40 +155,54 @@
         </header>
 
 
-        <section id="chat-box" class="chat-box">
+        <!-- =========================
+             CHAT VIEW
+        ========================== -->
+
+        <section
+            id="chat-box"
+            class="chat-box"
+        >
 
             <div class="welcome">
 
-                <div class="welcome-icon">✦</div>
+                <div class="welcome-icon">
+                    ✦
+                </div>
 
-                <h2>How can I help?</h2>
+                <h2>
+                    How can I help?
+                </h2>
 
                 <p>
                     Ask anything related to the documents
                     stored in your knowledge base.
                 </p>
 
+
                 <div class="suggestions">
 
                     <button
                         onclick="useSuggestion(
-                        'How can I improve flexibility and reduce stress?'
+                            'How can I improve flexibility and reduce stress?'
                         )"
                     >
                         Improve flexibility and reduce stress
                     </button>
 
+
                     <button
                         onclick="useSuggestion(
-                        'What is deep learning?'
+                            'What is deep learning?'
                         )"
                     >
                         Explain deep learning
                     </button>
 
+
                     <button
                         onclick="useSuggestion(
-                        'How do I prepare Italian coffee?'
+                            'How do I prepare Italian coffee?'
                         )"
                     >
                         Prepare Italian coffee
@@ -121,7 +215,12 @@
         </section>
 
 
-        <div class="input-wrapper">
+        <!-- CHAT INPUT -->
+
+        <div
+            id="chat-input-wrapper"
+            class="input-wrapper"
+        >
 
             <div class="input-box">
 
@@ -131,11 +230,16 @@
                     placeholder="Ask Watira AI..."
                 ></textarea>
 
-                <button id="send-button" aria-label="Send">
+
+                <button
+                    id="send-button"
+                    aria-label="Send"
+                >
                     ➜
                 </button>
 
             </div>
+
 
             <p class="disclaimer">
                 Answers are generated only from retrieved document context.
@@ -143,11 +247,384 @@
 
         </div>
 
+
+        <!-- =========================
+             RAG EVALUATION VIEW
+        ========================== -->
+
+        <section
+            id="evaluation-panel"
+            class="evaluation-panel"
+        >
+
+            <!-- Evaluation Header -->
+
+            <div class="evaluation-header">
+
+                <div>
+
+                    <h2>
+                        RAG Evaluation
+                    </h2>
+
+                    <p>
+                        Evaluate retrieval and response quality
+                        using the TruLens RAG Triad.
+                    </p>
+
+                </div>
+
+
+                <button id="run-evaluation-button">
+                    Run Evaluation
+                </button>
+
+            </div>
+
+
+            <!-- Metric Cards -->
+
+            <div class="metric-cards">
+
+
+                <div class="metric-card">
+
+                    <span>
+                        Context Relevance
+                    </span>
+
+                    <strong id="context-score">
+                        —
+                    </strong>
+
+                    <small>
+                        Question ↔ Retrieved Context
+                    </small>
+
+                </div>
+
+
+                <div class="metric-card">
+
+                    <span>
+                        Groundedness
+                    </span>
+
+                    <strong id="groundedness-score">
+                        —
+                    </strong>
+
+                    <small>
+                        Context ↔ Generated Answer
+                    </small>
+
+                </div>
+
+
+                <div class="metric-card">
+
+                    <span>
+                        Answer Relevance
+                    </span>
+
+                    <strong id="answer-score">
+                        —
+                    </strong>
+
+                    <small>
+                        Question ↔ Generated Answer
+                    </small>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- Evaluation Results -->
+
+            <div class="evaluation-results">
+
+                <div class="results-heading">
+
+                    <div>
+
+                        <h3>
+                            Test Cases
+                        </h3>
+
+                        <p>
+                            Detailed results for each evaluation query
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div id="evaluation-test-cases">
+
+                    <div class="evaluation-empty">
+                        Run the evaluation to view results.
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+        <!-- =========================
+     ADAPTIVE RAG EVALUATION VIEW
+========================== -->
+
+<section
+id="adaptive-evaluation-panel"
+class="evaluation-panel"
+>
+<div class="evaluation-header">
+
+    <div>
+        <h2>
+            Adaptive RAG Evaluation
+        </h2>
+
+        <p>
+            Evaluation of adaptive retrieval, query rewriting,
+            reranking, multi-hop retrieval, and grounded generation.
+        </p>
+    </div>
+
+    <button
+        id="run-adaptive-evaluation-button"
+        class="run-evaluation-button"
+    >
+        ▶ Run Adaptive Evaluation
+    </button>
+
+</div>
+
+
+<!-- Main Evaluation Metrics -->
+
+<div class="adaptive-metric-grid">
+
+    <div class="metric-card">
+        <span>Precision</span>
+        <strong id="adaptive-precision">—</strong>
+        <small>Relevant retrieved chunks</small>
+    </div>
+
+    <div class="metric-card">
+        <span>Retrieval Recall</span>
+        <strong id="adaptive-recall">—</strong>
+        <small>Relevant chunks successfully retrieved</small>
+    </div>
+
+    <div class="metric-card">
+        <span>Context Relevance</span>
+        <strong id="adaptive-context">—</strong>
+        <small>Question ↔ Retrieved Context</small>
+    </div>
+
+    <div class="metric-card">
+        <span>Answer Correctness</span>
+        <strong id="adaptive-correctness">—</strong>
+        <small>Answer ↔ Expected Information</small>
+    </div>
+
+    <div class="metric-card">
+        <span>Faithfulness</span>
+        <strong id="adaptive-faithfulness">—</strong>
+        <small>Context ↔ Generated Answer</small>
+    </div>
+
+    <div class="metric-card">
+        <span>Retrieval Failure Rate</span>
+        <strong id="adaptive-failure-rate">—</strong>
+        <small>Failed answerable retrievals</small>
+    </div>
+
+</div>
+
+
+<!-- Pipeline Metrics -->
+
+<div class="adaptive-secondary-metrics">
+
+    <div class="adaptive-stat">
+        <span>Rewrite Success Rate</span>
+        <strong id="adaptive-rewrite-success">—</strong>
+    </div>
+
+    <div class="adaptive-stat">
+        <span>Average Retrieval Attempts</span>
+        <strong id="adaptive-attempts">—</strong>
+    </div>
+
+    <div class="adaptive-stat">
+        <span>Average Latency</span>
+        <strong id="adaptive-latency">—</strong>
+    </div>
+
+    <div class="adaptive-stat">
+        <span>Test Cases</span>
+        <strong id="adaptive-test-count">8</strong>
+    </div>
+
+</div>
+
+
+<!-- Test Cases -->
+
+<div class="evaluation-results adaptive-results">
+
+    <div class="results-heading">
+        <div>
+            <h3>
+                Adaptive RAG Test Cases
+            </h3>
+
+            <p>
+                Results across the 8 required evaluation scenarios.
+            </p>
+        </div>
+    </div>
+
+    <div id="adaptive-test-cases">
+
+        <div class="evaluation-empty">
+            Adaptive RAG evaluation results will appear here.
+        </div>
+
+    </div>
+
+</div>
+
+</section>
+
+        <!-- =========================
+             VOICE RAG AGENT VIEW
+        ========================== -->
+
+        <section
+            id="voice-agent-panel"
+            class="voice-agent-panel"
+        >
+            <div class="voice-header">
+                <div>
+                    <h2>Voice RAG Agent</h2>
+                    <p>
+                        Real-time Arabic and English conversation using Azure Speech.
+                    </p>
+                </div>
+
+                <div class="voice-header-actions">
+                    <button id="clear-voice-history-button" class="secondary-button">
+                        Clear History
+                    </button>
+                    <button id="voice-session-button" class="voice-session-button">
+                        Start Voice Session
+                    </button>
+                </div>
+            </div>
+
+            <div class="voice-architecture" aria-label="Voice agent architecture">
+                <div>🎙️<strong>Microphone</strong></div>
+                <span>→</span>
+                <div><strong>Azure STT</strong><small>Arabic / English LID</small></div>
+                <span>→</span>
+                <div><strong>RAG Agent</strong><small>Conversation history</small></div>
+                <span>→</span>
+                <div><strong>Azure TTS</strong><small>Same-language voice</small></div>
+                <span>→</span>
+                <div>🔊<strong>Speaker</strong></div>
+                <div class="barge-in-path">Barge-In: speech detected → stop audio → process newest turn</div>
+            </div>
+
+            <div class="voice-workspace">
+                <div class="voice-control-card">
+                    <div id="voice-orb" class="voice-orb idle">
+                        <span class="voice-orb-icon">🎙</span>
+                        <span class="voice-waves" aria-hidden="true">
+                            <i></i><i></i><i></i><i></i>
+                        </span>
+                    </div>
+
+                    <div id="voice-status" class="voice-status">Ready</div>
+                    <p id="voice-status-detail" class="voice-status-detail">
+                        Start the session and allow microphone access.
+                    </p>
+
+                    <div class="voice-live-transcript">
+                        <span>Live transcript</span>
+                        <p id="voice-live-text">—</p>
+                    </div>
+
+                    <div class="voice-stats">
+                        <div>
+                            <span>Detected language</span>
+                            <strong id="voice-language">—</strong>
+                        </div>
+                        <div>
+                            <span>Barge-ins</span>
+                            <strong id="voice-interruptions">0</strong>
+                        </div>
+                        <div>
+                            <span>History turns</span>
+                            <strong id="voice-history-count">0</strong>
+                        </div>
+                    </div>
+
+                    <p class="voice-tip">
+                        Tip: headphones provide the most reliable barge-in demo by preventing speaker echo.
+                    </p>
+                </div>
+
+                <div class="voice-conversation-card">
+                    <div class="voice-conversation-heading">
+                        <div>
+                            <h3>Conversation</h3>
+                            <p>The recognizer remains active while the agent speaks.</p>
+                        </div>
+                        <span id="voice-listening-badge" class="voice-listening-badge">Offline</span>
+                    </div>
+
+                    <div id="voice-messages" class="voice-messages">
+                        <div id="voice-empty-state" class="voice-empty-state">
+                            <strong>ابدأ الحديث أو Start speaking</strong>
+                            <span>The agent detects Arabic or English automatically.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="voice-tests-section">
+                <div class="voice-tests-heading">
+                    <div>
+                        <h3>Voice Agent Test Cases</h3>
+                        <p>Exactly 8 required scenarios. Record the actual live-demo result for each one.</p>
+                    </div>
+                    <button id="export-voice-tests-button" class="secondary-button">
+                        Export Results
+                    </button>
+                </div>
+
+                <div id="voice-test-cases" class="voice-test-cases">
+                    <div class="evaluation-empty">Loading voice test cases…</div>
+                </div>
+            </div>
+        </section>
+
     </main>
 
 </div>
 
-<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+<script
+    defer
+    src="{{ url_for('static', filename='script.js', v='voice-rag-2') }}"
+></script>
 
 </body>
+
 </html>
