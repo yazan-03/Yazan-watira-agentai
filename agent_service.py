@@ -2,6 +2,7 @@ import os
 import json
 from dotenv import load_dotenv
 from openai import AzureOpenAI
+from quality_check import check_retrieval_quality
 
 from tools import (
     rag_search,
@@ -293,6 +294,7 @@ Voice conversation requirements:
     tool_trace = []
     sources = []
     ranking = []
+    retrieval_quality_checks = []
 
     response = client.chat.completions.create(
         model=GPT_DEPLOYMENT,
@@ -338,7 +340,31 @@ Voice conversation requirements:
             # NEW: if RAG Search was used, collect sources/ranking
             if tool_name == "rag_search" and isinstance(tool_result, list):
 
+                try:
+                    quality_question = arguments.get("query") or user_message
+                    retrieval_quality = check_retrieval_quality(
+                        quality_question,
+                        tool_result
+                    )
+                    retrieval_sufficient = bool(
+                        retrieval_quality.get("sufficient", False)
+                    )
+                except Exception as error:
+                    # Grounding must fail closed. A quality-check failure must
+                    # never allow an unsupported answer through.
+                    retrieval_quality = {
+                        "sufficient": False,
+                        "reason": f"Retrieval quality check failed: {error}"
+                    }
+                    retrieval_sufficient = False
+
+                retrieval_quality_checks.append(retrieval_quality)
+                tool_trace[-1]["retrieval_quality"] = retrieval_quality
+
                 for position, result in enumerate(tool_result, start=1):
+
+                    if not retrieval_sufficient:
+                        break
 
                     source = result.get("source")
 
@@ -373,9 +399,41 @@ Voice conversation requirements:
         assistant_message = response.choices[0].message
         messages.append(assistant_message)
 
+    used_rag = bool(retrieval_quality_checks)
+    has_sufficient_context = any(
+        check.get("sufficient", False)
+        for check in retrieval_quality_checks
+    )
+    used_non_rag_tool = any(
+        entry["tool"] != "rag_search"
+        for entry in tool_trace
+    )
+
+    # Prompt instructions are not a security boundary. Enforce grounding on
+    # the server so irrelevant top-K results (or a direct model answer that
+    # skipped retrieval) cannot be returned as knowledge-base facts.
+    grounding_failed = (
+        (used_rag and not has_sufficient_context) or
+        (not tool_trace and not used_non_rag_tool)
+    )
+
+    if grounding_failed:
+        is_arabic = response_language == "ar-JO" or any(
+            "\u0600" <= character <= "\u06ff"
+            for character in user_message
+        )
+        assistant_message.content = (
+            "لم أجد معلومات مرتبطة بهذا الطلب في قاعدة المعرفة."
+            if is_arabic
+            else "I could not find information related to this request in the knowledge base."
+        )
+        sources = []
+        ranking = []
+
     return {
         "answer": assistant_message.content,
         "tool_trace": tool_trace,
         "sources": sources,
-        "ranking": ranking
+        "ranking": ranking,
+        "retrieval_quality": retrieval_quality_checks
     }
