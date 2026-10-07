@@ -1,17 +1,26 @@
 import json
 import os
+import tempfile
 import urllib.error
 import urllib.request
 
 from flask import Flask, render_template, request, jsonify
+from werkzeug.exceptions import RequestEntityTooLarge
 
 from agent_service import run_agent
 from evaluate_rag import run_evaluation
+from image_service import process_image_question, ImageValidationError, ImageProcessingError
 from voice_test_cases import VOICE_TEST_CASES
+from image_test_cases import IMAGE_TEST_CASES
 
 
 app = Flask(__name__)
+app.config["MAX_CONTENT_LENGTH"] = 11 * 1024 * 1024
 
+
+@app.errorhandler(RequestEntityTooLarge)
+def request_too_large(error):
+    return jsonify({"error": "Upload an image smaller than 10 MB."}), 413
 
 @app.route("/")
 def home():
@@ -50,6 +59,62 @@ def chat():
                 "processing your question."
             )
         }), 500
+
+
+@app.route("/image-chat", methods=["POST"])
+def image_chat():
+    image = request.files.get("image")
+    question = request.form.get("message", "").strip()
+
+    if not image or not image.filename:
+        return jsonify({
+            "error": "Please upload an image."
+        }), 400
+
+    if not question:
+        return jsonify({
+            "error": "Please enter a question about the image."
+        }), 400
+
+    try:
+        # Each request owns a temporary directory; concurrent uploads with
+        # the same filename cannot overwrite or delete one another's image.
+        with tempfile.TemporaryDirectory(prefix="watira-image-") as temp_dir:
+            image_path = os.path.join(temp_dir, "upload.image")
+            image.save(image_path)
+            result = process_image_question(image_path, question)
+        return jsonify(result)
+
+    except ImageValidationError as error:
+        return jsonify({"error": str(error)}), 400
+
+    except ImageProcessingError as error:
+        app.logger.warning("Image analysis failed: %s", error)
+        return jsonify({"error": str(error)}), 502
+
+    except Exception as error:
+        print(f"Image agent error: {error}")
+
+        return jsonify({
+            "error": (
+                "Something went wrong while processing "
+                "the uploaded image."
+            )
+        }), 500
+
+
+@app.route("/image-test-cases", methods=["GET"])
+def image_test_cases():
+    return jsonify({"test_cases": IMAGE_TEST_CASES})
+
+
+@app.route("/image-test-results", methods=["GET"])
+def image_test_results():
+    file_path = os.path.join(app.root_path, "image_test_results.json")
+    if not os.path.exists(file_path):
+        return jsonify({"results": []})
+    with open(file_path, "r", encoding="utf-8") as results_file:
+        return jsonify(json.load(results_file))
 
 
 # ==================================================

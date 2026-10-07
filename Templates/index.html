@@ -9,7 +9,7 @@
 
     <link
         rel="stylesheet"
-        href="{{ url_for('static', filename='style.css', v='voice-rag') }}"
+        href="{{ url_for('static', filename='style.css', v='image-ocr-1') }}"
     >
 </head>
 
@@ -111,6 +111,18 @@
             >
                 <span>◉</span>
                 Voice RAG Agent
+            </button>
+
+            <p class="section-label image-section-label">
+                IMAGE AGENT
+            </p>
+
+            <button
+                id="image-agent-button"
+                class="evaluation-button"
+            >
+                <span>▣</span>
+                Image & OCR Agent
             </button>
 
             </div>
@@ -615,6 +627,240 @@ class="evaluation-panel"
             </div>
         </section>
 
+        <!-- =========================
+            IMAGE & OCR AGENT VIEW
+        ========================== -->
+
+        <section
+        id="image-agent-panel"
+        class="image-agent-panel"
+        >
+        <div class="image-agent-header">
+            <div>
+                <h2>Image & OCR Agent</h2>
+                <p>
+                    Upload an image and ask questions using visual understanding
+                    and Arabic / English OCR.
+                </p>
+            </div>
+
+            <button
+                id="clear-image-button"
+                class="secondary-button"
+            >
+                Clear
+            </button>
+        </div>
+
+
+        <!-- Architecture -->
+
+        <div class="image-architecture" aria-label="Image and OCR agent architecture">
+
+            <div>
+                <strong>🖼️ Image</strong>
+                <small>Upload</small>
+            </div>
+
+            <span>→</span>
+
+            <div>
+                <strong>Inspect image + question</strong>
+                <small>Detect text and needed evidence</small>
+            </div>
+
+            <span>→</span>
+
+            <div>
+                <strong>Conditional OCR</strong>
+                <small>Arabic / English, when needed</small>
+            </div>
+
+            <span>→</span>
+
+            <div>
+                <strong>Existing RAG</strong>
+                <small>Only if knowledge base is needed</small>
+            </div>
+
+            <span>→</span>
+
+            <div>
+                <strong>Answer</strong>
+                <small>Grounded, same-language response</small>
+            </div>
+
+        </div>
+
+
+        <div class="image-workspace">
+
+            <!-- Upload Side -->
+
+            <div class="image-upload-card">
+
+                <h3>Upload Image</h3>
+
+                <label
+                    for="image-file-input"
+                    id="image-drop-zone"
+                    class="image-drop-zone"
+                >
+                    <span class="image-upload-icon">＋</span>
+
+                    <strong>Choose an image</strong>
+
+                    <small>
+                        JPG, PNG, WEBP or GIF · Up to 10 MB
+                    </small>
+
+                    <input
+                        type="file"
+                        id="image-file-input"
+                        accept="image/jpeg,image/png,image/webp,image/gif"
+                        hidden
+                    >
+                </label>
+
+
+                <div
+                    id="image-preview-container"
+                    class="image-preview-container"
+                >
+                    <img
+                        id="image-preview"
+                        alt="Uploaded image preview"
+                    >
+                </div>
+
+
+                <div class="image-question-box">
+
+                    <textarea
+                        id="image-question-input"
+                        rows="3"
+                        maxlength="2000"
+                        aria-label="Question about the uploaded image"
+                        placeholder="Ask a question about the image..."
+                    ></textarea>
+
+                    <button id="image-send-button">
+                        Analyze Image
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- Results Side -->
+
+            <div class="image-results-card">
+
+                <div class="image-result-heading">
+                    <div>
+                        <h3>Analysis Result</h3>
+                        <p>
+                            Visual understanding and OCR results
+                        </p>
+                    </div>
+
+                    <span
+                        id="image-analysis-status"
+                        class="image-analysis-status"
+                        role="status"
+                        aria-live="polite"
+                    >
+                        Ready
+                    </span>
+                </div>
+
+
+                <div class="image-analysis-info">
+
+                    <div>
+                        <span>Analysis Mode</span>
+                        <strong id="image-mode">—</strong>
+                    </div>
+
+                    <div>
+                        <span>OCR Required</span>
+                        <strong id="image-ocr-required">—</strong>
+                    </div>
+
+                    <div>
+                        <span>Text Detected</span>
+                        <strong id="image-has-text">—</strong>
+                    </div>
+
+                    <div>
+                        <span>Knowledge Base Used</span>
+                        <strong id="image-rag-used">—</strong>
+                    </div>
+
+                </div>
+
+                <p id="image-decision-reason" class="image-decision-reason"></p>
+                <div id="image-warnings" class="image-warnings" hidden></div>
+
+                <div
+                    id="image-ocr-section"
+                    class="image-result-section"
+                >
+                    <div class="image-result-title">
+                        <span>OCR Result</span>
+                        <small>Extracted text</small>
+                    </div>
+
+                    <div
+                        id="image-ocr-result"
+                        class="image-result-content"
+                        dir="auto"
+                    >
+                        No OCR result yet.
+                    </div>
+                </div>
+
+
+                <div class="image-result-section">
+
+                    <div class="image-result-title">
+                        <span>Final Answer</span>
+                        <small>Grounded image response</small>
+                    </div>
+
+                    <div
+                        id="image-final-answer"
+                        class="image-result-content"
+                        dir="auto"
+                    >
+                        Upload an image and ask a question to begin.
+                    </div>
+
+                </div>
+
+                <div id="image-sources" class="image-sources" hidden></div>
+
+            </div>
+
+        </div>
+
+        <div class="image-tests-section">
+            <div class="voice-tests-heading">
+                <div>
+                    <h3>Image & OCR Test Cases</h3>
+                    <p>Exactly 8 scenarios with bundled images. Run each case and review its actual result.</p>
+                </div>
+                <button id="export-image-tests-button" class="secondary-button">Export Results</button>
+            </div>
+            <p id="image-tests-notice" class="image-tests-notice" role="status"></p>
+            <div id="image-test-cases" class="image-test-cases">
+                <div class="evaluation-empty">Loading image test cases…</div>
+            </div>
+        </div>
+
+        </section>
+
     </main>
 
 </div>
@@ -622,7 +868,7 @@ class="evaluation-panel"
 
 <script
     defer
-    src="{{ url_for('static', filename='script.js', v='voice-rag-2') }}"
+    src="{{ url_for('static', filename='script.js', v='image-ocr-1') }}"
 ></script>
 
 </body>
