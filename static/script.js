@@ -28,6 +28,45 @@ const voiceAgentButton =
 const voiceAgentPanel =
     document.getElementById("voice-agent-panel");
 
+const imageAgentButton =
+    document.getElementById("image-agent-button");
+
+const imageAgentPanel =
+    document.getElementById("image-agent-panel");
+
+const imageFileInput =
+    document.getElementById("image-file-input");
+
+const imagePreview =
+    document.getElementById("image-preview");
+
+const imagePreviewContainer =
+    document.getElementById("image-preview-container");
+
+const imageQuestionInput =
+    document.getElementById("image-question-input");
+
+const imageSendButton =
+    document.getElementById("image-send-button");
+
+const clearImageButton =
+    document.getElementById("clear-image-button");
+
+const imageMode =
+    document.getElementById("image-mode");
+
+const imageOcrRequired =
+    document.getElementById("image-ocr-required");
+
+const imageOcrResult =
+    document.getElementById("image-ocr-result");
+
+const imageFinalAnswer =
+    document.getElementById("image-final-answer");
+
+const imageAnalysisStatus =
+    document.getElementById("image-analysis-status");
+
 const pageTitle = document.getElementById("page-title");
 const pageSubtitle = document.getElementById("page-subtitle");
 
@@ -732,113 +771,77 @@ function escapeHTML(text) {
 
 
 // ==========================================
-// DOCUMENT ASSISTANT VIEW
+// PAGE NAVIGATION
 // ==========================================
 
-assistantButton.addEventListener(
-    "click",
-    () => {
-
-        // Hide evaluation views
-        evaluationPanel.classList.remove("active");
-        adaptiveEvaluationPanel.classList.remove("active");
-        voiceAgentPanel.classList.remove("active");
-        stopVoiceSession();
-
-        // Show chat
-        chatBox.style.display = "flex";
-        inputWrapper.style.display = "block";
-
-        // Restore page title
-        pageTitle.textContent =
-            "Document Assistant";
-
-        pageSubtitle.textContent =
-            "Ask questions about your knowledge base";
+const applicationViews = {
+    assistant: {
+        button: assistantButton,
+        title: "Document Assistant",
+        subtitle: "Ask questions about your knowledge base"
+    },
+    evaluation: {
+        button: evaluationButton,
+        panel: evaluationPanel,
+        title: "RAG Evaluation",
+        subtitle: "Evaluate your RAG pipeline using TruLens RAG Triad"
+    },
+    "adaptive-rag": {
+        button: adaptiveEvaluationButton,
+        panel: adaptiveEvaluationPanel,
+        title: "Adaptive RAG Evaluation",
+        subtitle: "Evaluate adaptive retrieval, rewriting, reranking and multi-hop RAG"
+    },
+    "voice-rag": {
+        button: voiceAgentButton,
+        panel: voiceAgentPanel,
+        title: "Voice RAG Agent",
+        subtitle: "Arabic / English voice conversation with real-time barge-in"
+    },
+    "image-ocr": {
+        button: imageAgentButton,
+        panel: imageAgentPanel,
+        title: "Image & OCR Agent",
+        subtitle: "Visual understanding with Arabic and English OCR"
     }
-);
+};
 
-// ==========================================
-// RAG EVALUATION VIEW
-// ==========================================
+function showApplicationView(requestedPage, updateUrl = true) {
+    const aliases = {
+        "image-agent": "image-ocr",
+        "image-rag": "image-ocr",
+        "adaptive-evaluation": "adaptive-rag",
+        "rag-evaluation": "evaluation"
+    };
+    const requested = aliases[requestedPage] || requestedPage;
+    const page = applicationViews[requested] ? requested : "assistant";
+    const view = applicationViews[page];
 
-evaluationButton.addEventListener(
-    "click",
-    () => {
+    Object.values(applicationViews).forEach((entry) => {
+        entry.panel?.classList.toggle("active", entry === view);
+        entry.button.classList.toggle("selected", entry === view);
+        entry.button.setAttribute("aria-current", entry === view ? "page" : "false");
+    });
+    chatBox.style.display = page === "assistant" ? "flex" : "none";
+    inputWrapper.style.display = page === "assistant" ? "block" : "none";
+    pageTitle.textContent = view.title;
+    pageSubtitle.textContent = view.subtitle;
 
-        // Hide chat
-        chatBox.style.display = "none";
-        inputWrapper.style.display = "none";
+    if (page !== "voice-rag") stopVoiceSession();
+    if (page === "adaptive-rag") loadAdaptiveEvaluation();
+    if (page === "voice-rag") loadVoiceTestCases();
+    if (page === "image-ocr") loadImageTestCases();
 
-        // Hide Adaptive Evaluation
-        adaptiveEvaluationPanel.classList.remove("active");
-        voiceAgentPanel.classList.remove("active");
-        stopVoiceSession();
-
-        // Show RAG Evaluation
-        evaluationPanel.classList.add("active");
-
-        // Change page title
-        pageTitle.textContent =
-            "RAG Evaluation";
-
-        pageSubtitle.textContent =
-            "Evaluate your RAG pipeline using TruLens RAG Triad";
+    if (updateUrl) {
+        const url = new URL(window.location.href);
+        url.searchParams.set("page", page);
+        window.history.replaceState(null, "", url);
     }
-);
+}
 
-// ==========================================
-// ADAPTIVE RAG EVALUATION VIEW
-// ==========================================
-
-adaptiveEvaluationButton.addEventListener(
-    "click",
-    async () => {
-
-        // Hide chat
-        chatBox.style.display = "none";
-        inputWrapper.style.display = "none";
-
-        // Hide normal RAG Evaluation
-        evaluationPanel.classList.remove("active");
-        voiceAgentPanel.classList.remove("active");
-        stopVoiceSession();
-
-        // Show Adaptive RAG Evaluation
-        adaptiveEvaluationPanel.classList.add("active");
-
-        // Change page title
-        pageTitle.textContent =
-            "Adaptive RAG Evaluation";
-
-        pageSubtitle.textContent =
-            "Evaluate adaptive retrieval, rewriting, reranking and multi-hop RAG";
-
-        // Load ONLY the last saved results
-        await loadAdaptiveEvaluation();
-    }
-);
-
-// ==========================================
-// VOICE RAG AGENT VIEW
-// ==========================================
-
-voiceAgentButton.addEventListener(
-    "click",
-    async () => {
-        chatBox.style.display = "none";
-        inputWrapper.style.display = "none";
-        evaluationPanel.classList.remove("active");
-        adaptiveEvaluationPanel.classList.remove("active");
-        voiceAgentPanel.classList.add("active");
-
-        pageTitle.textContent = "Voice RAG Agent";
-        pageSubtitle.textContent =
-            "Arabic / English voice conversation with real-time barge-in";
-
-        await loadVoiceTestCases();
-    }
-);
+Object.entries(applicationViews).forEach(([page, view]) => {
+    view.button.addEventListener("click", () => showApplicationView(page));
+});
 
 // ==========================================
 // RUN RAG EVALUATION
@@ -2924,5 +2927,540 @@ exportVoiceTestsButton.addEventListener("click", exportVoiceTestResults);
 
 
 // ==========================================
+// IMAGE & OCR AGENT
+// ==========================================
+
+let selectedImageFile = null;
+let selectedImagePreviewUrl = null;
+let imageRequestController = null;
+let imageRequestVersion = 0;
+let imageTestCasesData = [];
+let imageTestsLoadPromise = null;
+let imageTestResultsInMemory = {};
+const imageTestStorageKey = "watira-image-ocr-test-results-v1";
+const maxImageBytes = 10 * 1024 * 1024;
+const allowedImageTypes = new Set([
+    "image/jpeg", "image/png", "image/webp", "image/gif"
+]);
+
+imageFileInput.addEventListener("change", () => {
+    const file = imageFileInput.files[0];
+    if (!file) return;
+    try {
+        selectImageFile(file);
+    } catch (error) {
+        clearSelectedImage();
+        imageAnalysisStatus.textContent = "Invalid image";
+        imageFinalAnswer.textContent = error.message;
+    }
+});
+
+imageSendButton.addEventListener("click", analyzeUploadedImage);
+
+imageQuestionInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        analyzeUploadedImage();
+    }
+});
+
+async function analyzeUploadedImage() {
+    const question = imageQuestionInput.value.trim();
+    if (!selectedImageFile) {
+        imageAnalysisStatus.textContent = "Upload an image first";
+        return;
+    }
+
+    if (!question) {
+        imageAnalysisStatus.textContent = "Enter a question";
+        imageQuestionInput.focus();
+        return;
+    }
+    if (question.length > 2000) {
+        imageAnalysisStatus.textContent = "Question is too long";
+        return;
+    }
+    await requestImageAnalysis(selectedImageFile, question);
+}
+
+function cancelImageRequest() {
+    imageRequestVersion += 1;
+    imageRequestController?.abort();
+    imageRequestController = null;
+    setImageBusy(false);
+}
+
+function setImageBusy(busy) {
+    imageSendButton.disabled = busy;
+    imageSendButton.textContent = busy ? "Analyzing…" : "Analyze Image";
+    document.querySelectorAll(".image-test-run-button").forEach((button) => {
+        button.disabled = busy;
+    });
+}
+
+function resetImageResults() {
+    imageMode.textContent = "—";
+    imageOcrRequired.textContent = "—";
+    document.getElementById("image-has-text").textContent = "—";
+    document.getElementById("image-rag-used").textContent = "—";
+    document.getElementById("image-decision-reason").textContent = "";
+    document.getElementById("image-warnings").replaceChildren();
+    document.getElementById("image-warnings").hidden = true;
+    document.getElementById("image-sources").replaceChildren();
+    document.getElementById("image-sources").hidden = true;
+    imageOcrResult.textContent = "No OCR result yet.";
+    imageFinalAnswer.textContent = "Upload an image and ask a question to begin.";
+}
+
+function selectImageFile(file) {
+    if (!allowedImageTypes.has(file.type)) {
+        throw new Error("Choose a JPG, PNG, WEBP or GIF image.");
+    }
+    if (file.size === 0 || file.size > maxImageBytes) {
+        throw new Error("The image must contain data and be no larger than 10 MB.");
+    }
+    cancelImageRequest();
+    selectedImageFile = file;
+    if (selectedImagePreviewUrl) URL.revokeObjectURL(selectedImagePreviewUrl);
+    selectedImagePreviewUrl = URL.createObjectURL(file);
+    imagePreview.src = selectedImagePreviewUrl;
+    imagePreviewContainer.style.display = "block";
+    resetImageResults();
+    imageAnalysisStatus.textContent = "Image selected";
+}
+
+function clearSelectedImage() {
+    cancelImageRequest();
+    selectedImageFile = null;
+    imageFileInput.value = "";
+    if (selectedImagePreviewUrl) URL.revokeObjectURL(selectedImagePreviewUrl);
+    selectedImagePreviewUrl = null;
+    imagePreview.removeAttribute("src");
+    imagePreviewContainer.style.display = "none";
+    imageQuestionInput.value = "";
+    resetImageResults();
+    imageAnalysisStatus.textContent = "Ready";
+}
+
+async function readImageJsonResponse(response) {
+    const contentType = response.headers.get("content-type") || "";
+    if (!contentType.includes("application/json")) {
+        throw new Error(response.status === 413
+            ? "The image is too large. Choose an image under 10 MB."
+            : "The server returned an unexpected response. Check that the application is running.");
+    }
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Image analysis failed.");
+    return data;
+}
+
+function renderImageAnalysis(data) {
+    imageMode.textContent = data.mode || "—";
+    imageOcrRequired.textContent = data.ocr_required ? "Yes" : "No";
+    document.getElementById("image-has-text").textContent =
+        typeof data.has_text === "boolean" ? (data.has_text ? "Yes" : "No") : "—";
+    document.getElementById("image-rag-used").textContent = data.rag_used ? "Yes" : "No";
+    document.getElementById("image-decision-reason").textContent = data.decision_reason || "";
+    const ocrText = data.ocr_required
+        ? (data.ocr_text || "No readable text could be extracted.")
+        : "OCR was not required for this question.";
+    renderImageOcrText(imageOcrResult, ocrText);
+    imageFinalAnswer.textContent = data.answer || "No answer was returned.";
+    const statusLabels = {
+        supported: "Complete", partial: "Partial answer", unavailable: "Information unavailable"
+    };
+    imageAnalysisStatus.textContent = statusLabels[data.status] || "Complete";
+
+    const warnings = document.getElementById("image-warnings");
+    warnings.replaceChildren();
+    const warningItems = Array.isArray(data.warnings) ? data.warnings : [];
+    warningItems.forEach((warning) => appendImageText(warnings, "p", String(warning)));
+    warnings.hidden = warningItems.length === 0;
+
+    const sources = document.getElementById("image-sources");
+    sources.replaceChildren();
+    const sourceItems = Array.isArray(data.sources) ? data.sources : [];
+    if (sourceItems.length) {
+        appendImageText(sources, "strong", "Knowledge base sources");
+        sourceItems.forEach((source) => {
+            const label = typeof source === "string" ? source
+                : (source.title || source.source || source.file_name || source.filename || "Retrieved document");
+            appendImageText(sources, "p", label);
+        });
+    }
+    sources.hidden = sourceItems.length === 0;
+}
+
+async function requestImageAnalysis(file, question, testCase = null) {
+    cancelImageRequest();
+    const version = imageRequestVersion;
+    const controller = new AbortController();
+    imageRequestController = controller;
+    const formData = new FormData();
+    formData.append("image", file);
+    formData.append("message", question);
+    setImageBusy(true);
+    resetImageResults();
+    imageAnalysisStatus.textContent = "Analyzing";
+    imageOcrResult.textContent = "Waiting for analysis...";
+    imageFinalAnswer.textContent = "Analyzing the uploaded image...";
+    const startedAt = Date.now();
+    let timedOut = false;
+    const timeout = setTimeout(() => {
+        timedOut = true;
+        controller.abort();
+    }, 120000);
+    try {
+        const response = await fetch("/image-chat", {
+            method: "POST",
+            body: formData,
+            signal: controller.signal
+        });
+        const data = await readImageJsonResponse(response);
+        if (version !== imageRequestVersion) return;
+        renderImageAnalysis(data);
+        if (testCase) {
+            saveImageTestResult(testCase.id, {
+                ...freshImageTestResult(testCase),
+                ...data,
+                agent_status: data.status || null,
+                status: "not_evaluated",
+                checks: null,
+                review_status: "not_reviewed",
+                actual_result: data.answer || "No answer was returned.",
+                errors_or_limitations: (data.warnings || []).join("\n"),
+                latency_ms: Date.now() - startedAt,
+                tested_at: new Date().toISOString()
+            }, true);
+            renderImageTestCases();
+        }
+        return data;
+    } catch (error) {
+        if (version !== imageRequestVersion) return;
+        const message = timedOut ? "Analysis timed out. Try the image again."
+            : (error.message || "Image analysis failed.");
+        imageAnalysisStatus.textContent = "Error";
+        imageOcrResult.textContent = "—";
+        imageFinalAnswer.textContent = message;
+        if (testCase) {
+            saveImageTestResult(testCase.id, {
+                ...freshImageTestResult(testCase),
+                review_status: "failed",
+                actual_result: "Analysis did not complete.",
+                errors_or_limitations: message,
+                tested_at: new Date().toISOString()
+            }, true);
+            renderImageTestCases();
+        }
+    } finally {
+        clearTimeout(timeout);
+        if (version === imageRequestVersion) {
+            imageRequestController = null;
+            setImageBusy(false);
+        }
+    }
+}
+
+clearImageButton.addEventListener("click", clearSelectedImage);
+
+function appendImageText(parent, tag, text, className = "") {
+    const element = document.createElement(tag);
+    element.textContent = text ?? "";
+    element.dir = "auto";
+    if (className) element.className = className;
+    parent.appendChild(element);
+    return element;
+}
+
+function renderImageOcrText(element, text) {
+    const transcript = String(text ?? "");
+    const tokens = /[A-Za-z0-9\u0660-\u0669\u06f0-\u06f9]+(?:[-/][A-Za-z0-9\u0660-\u0669\u06f0-\u06f9]+)+/g;
+    element.replaceChildren();
+    let position = 0;
+    for (const match of transcript.matchAll(tokens)) {
+        element.appendChild(document.createTextNode(transcript.slice(position, match.index)));
+        const isolated = document.createElement("bdi");
+        isolated.dir = "ltr";
+        isolated.textContent = match[0];
+        element.appendChild(isolated);
+        position = match.index + match[0].length;
+    }
+    element.appendChild(document.createTextNode(transcript.slice(position)));
+}
+
+function getImageTestResults() {
+    try {
+        const results = JSON.parse(localStorage.getItem(imageTestStorageKey) || "{}");
+        const stored = results && typeof results === "object" && !Array.isArray(results) ? results : {};
+        return {...stored, ...imageTestResultsInMemory};
+    } catch {
+        return {...imageTestResultsInMemory};
+    }
+}
+
+function freshImageTestResult(testCase) {
+    return {
+        status: "not_evaluated",
+        agent_status: null,
+        checks: null,
+        review_status: "not_reviewed",
+        reviewed_at: null,
+        answer: null,
+        agent_final_answer: null,
+        ocr_text: null,
+        ocr_result: null,
+        ocr_required: null,
+        has_text: null,
+        mode: null,
+        rag_used: null,
+        sources: [],
+        warnings: [],
+        decision_reason: null,
+        latency_ms: null,
+        tested_at: null,
+        actual_result: "",
+        errors_or_limitations: "",
+        uploaded_image: testCase.image,
+        user_question: testCase.question
+    };
+}
+
+function saveImageTestResult(id, result, replace = false) {
+    const results = getImageTestResults();
+    results[id] = replace ? result : {...results[id], ...result};
+    imageTestResultsInMemory = results;
+    try {
+        localStorage.setItem(imageTestStorageKey, JSON.stringify(results));
+    } catch {
+        document.getElementById("image-tests-notice").textContent =
+            "Browser storage is unavailable. Export your results before leaving the page.";
+    }
+}
+
+async function loadImageTestCases() {
+    if (imageTestCasesData.length) return;
+    if (imageTestsLoadPromise) return imageTestsLoadPromise;
+    imageTestsLoadPromise = (async () => {
+        const container = document.getElementById("image-test-cases");
+        try {
+            const response = await fetch("/image-test-cases");
+            const data = await readImageJsonResponse(response);
+            if (!Array.isArray(data.test_cases) || data.test_cases.length !== 8) {
+                throw new Error("The image task requires exactly 8 test cases.");
+            }
+            imageTestCasesData = data.test_cases;
+            // Saved server runs are optional; browser reviews stay authoritative.
+            try {
+                const resultsResponse = await fetch("/image-test-results");
+                if (resultsResponse.ok) {
+                    const payload = await resultsResponse.json();
+                    const stored = getImageTestResults();
+                    (Array.isArray(payload.results) ? payload.results : []).forEach((result) => {
+                        const id = result.id ?? result.test_id ?? result.test;
+                        if (id != null && !stored[id]) {
+                            saveImageTestResult(id, {...result, review_status: "not_reviewed"});
+                        }
+                    });
+                }
+            } catch {
+                // Test cases remain usable even when no saved server run exists.
+            }
+            renderImageTestCases();
+        } catch (error) {
+            container.replaceChildren();
+            appendImageText(container, "p", error.message, "evaluation-empty");
+        } finally {
+            imageTestsLoadPromise = null;
+        }
+    })();
+    return imageTestsLoadPromise;
+}
+
+function appendImageTestDetail(parent, label, value, isOcr = false) {
+    const section = document.createElement("div");
+    section.className = "image-test-detail";
+    appendImageText(section, "strong", label);
+    const content = appendImageText(section, "p", value || "—");
+    if (isOcr) renderImageOcrText(content, value || "—");
+    parent.appendChild(section);
+}
+
+function renderImageTestCases() {
+    const container = document.getElementById("image-test-cases");
+    container.replaceChildren();
+    const results = getImageTestResults();
+    imageTestCasesData.forEach((testCase) => {
+        const saved = results[testCase.id] || {};
+        const card = document.createElement("article");
+        card.className = "image-test-card";
+        const heading = document.createElement("div");
+        heading.className = "image-test-heading";
+        appendImageText(heading, "h4", `Test ${testCase.id}: ${testCase.scenario}`);
+        const runButton = appendImageText(heading, "button", "Run Case", "image-test-run-button secondary-button");
+        runButton.type = "button";
+        runButton.disabled = Boolean(imageRequestController);
+        runButton.addEventListener("click", () => runImageTestCase(testCase));
+        card.appendChild(heading);
+        const fixture = document.createElement("img");
+        fixture.src = testCase.image;
+        fixture.alt = `Uploaded test image: ${testCase.scenario}`;
+        fixture.loading = "lazy";
+        fixture.className = "image-test-fixture";
+        card.appendChild(fixture);
+        appendImageTestDetail(card, "User question", testCase.question);
+        appendImageTestDetail(card, "Expected result", testCase.expected);
+        if (testCase.expected_ocr) appendImageTestDetail(card, "Expected OCR text", testCase.expected_ocr, true);
+        appendImageTestDetail(card, "OCR result", saved.ocr_required === false
+            ? "Not required" : (saved.ocr_text || saved.ocr_result || "Not run yet"), true);
+        appendImageTestDetail(card, "Agent's final answer", saved.answer || saved.agent_final_answer || "Not run yet");
+        if (saved.status === "passed" || saved.status === "failed") {
+            appendImageTestDetail(card, "Automated checks", `${saved.status === "passed" ? "Passed" : "Failed"} — review the answer separately.`);
+        }
+        if (saved.checks) {
+            const checks = Array.isArray(saved.checks)
+                ? saved.checks.map((check) => typeof check === "string" ? check : JSON.stringify(check)).join("\n")
+                : JSON.stringify(saved.checks, null, 2);
+            appendImageTestDetail(card, "Check details", checks);
+        }
+        if (saved.mode) {
+            appendImageTestDetail(card, "Observed pipeline", `${saved.mode} · OCR: ${saved.ocr_required ? "Yes" : "No"} · RAG: ${saved.rag_used ? "Yes" : "No"}`);
+        }
+        const review = document.createElement("div");
+        review.className = "image-test-review";
+        const statusLabel = document.createElement("label");
+        appendImageText(statusLabel, "span", "Review result");
+        const status = document.createElement("select");
+        [["not_reviewed", "Not reviewed"], ["passed", "Passed"], ["failed", "Failed"]].forEach(([value, label]) => {
+            const option = document.createElement("option");
+            option.value = value;
+            option.textContent = label;
+            status.appendChild(option);
+        });
+        status.value = saved.review_status || "not_reviewed";
+        statusLabel.appendChild(status);
+        review.appendChild(statusLabel);
+        const actualLabel = document.createElement("label");
+        appendImageText(actualLabel, "span", "Actual result / review notes");
+        const actual = document.createElement("textarea");
+        actual.rows = 3;
+        actual.dir = "auto";
+        actual.value = saved.actual_result || "";
+        actual.placeholder = "Compare the actual answer with the expected result.";
+        actualLabel.appendChild(actual);
+        review.appendChild(actualLabel);
+        const errorsLabel = document.createElement("label");
+        appendImageText(errorsLabel, "span", "Errors or limitations");
+        const errors = document.createElement("textarea");
+        errors.rows = 2;
+        errors.dir = "auto";
+        errors.value = saved.errors_or_limitations || (Array.isArray(saved.warnings) ? saved.warnings.join("\n") : "");
+        errors.placeholder = "Unreadable text, missing information, service error, or other limitations.";
+        errorsLabel.appendChild(errors);
+        review.appendChild(errorsLabel);
+        const saveReview = () => saveImageTestResult(testCase.id, {
+            review_status: status.value,
+            actual_result: actual.value,
+            errors_or_limitations: errors.value,
+            reviewed_at: new Date().toISOString()
+        });
+        status.addEventListener("change", saveReview);
+        actual.addEventListener("input", saveReview);
+        errors.addEventListener("input", saveReview);
+        card.appendChild(review);
+        container.appendChild(card);
+    });
+}
+
+async function runImageTestCase(testCase) {
+    cancelImageRequest();
+    const version = imageRequestVersion;
+    const controller = new AbortController();
+    imageRequestController = controller;
+    saveImageTestResult(testCase.id, {
+        ...freshImageTestResult(testCase), actual_result: "Test is running."
+    }, true);
+    renderImageTestCases();
+    setImageBusy(true);
+    imageAnalysisStatus.textContent = "Loading test image";
+    try {
+        const response = await fetch(testCase.image, {signal: controller.signal});
+        if (!response.ok) throw new Error("The bundled test image could not be loaded.");
+        const blob = await response.blob();
+        if (version !== imageRequestVersion) return;
+        const filename = testCase.image.split("/").pop() || `image-test-${testCase.id}.png`;
+        const file = new File([blob], filename, {type: blob.type});
+        selectImageFile(file);
+        imageQuestionInput.value = testCase.question;
+        await requestImageAnalysis(file, testCase.question, testCase);
+    } catch (error) {
+        if (version !== imageRequestVersion || error.name === "AbortError") return;
+        imageAnalysisStatus.textContent = "Error";
+        imageFinalAnswer.textContent = error.message;
+        saveImageTestResult(testCase.id, {
+            ...freshImageTestResult(testCase),
+            review_status: "failed", actual_result: "Test could not run.",
+            errors_or_limitations: error.message, tested_at: new Date().toISOString()
+        }, true);
+        renderImageTestCases();
+    } finally {
+        if (version === imageRequestVersion) {
+            imageRequestController = null;
+            setImageBusy(false);
+        }
+    }
+}
+
+function exportImageTestResults() {
+    if (imageTestCasesData.length !== 8) {
+        document.getElementById("image-tests-notice").textContent = "Load all 8 test cases before exporting.";
+        return;
+    }
+    const results = getImageTestResults();
+    const output = imageTestCasesData.map((testCase) => {
+        const saved = results[testCase.id] || {};
+        return {
+            ...testCase,
+            uploaded_image: testCase.image,
+            user_question: testCase.question,
+            expected_result: testCase.expected,
+            ocr_result: saved.ocr_text ?? saved.ocr_result ?? null,
+            agent_final_answer: saved.answer || saved.agent_final_answer || null,
+            actual_result: saved.actual_result || "Not run yet",
+            errors_or_limitations: saved.errors_or_limitations || "",
+            review_status: saved.review_status || "not_reviewed",
+            automated_status: saved.status === "passed" || saved.status === "failed" ? saved.status : null,
+            automated_checks: saved.checks || null,
+            agent_status: saved.agent_status || (["supported", "partial", "unavailable"].includes(saved.status) ? saved.status : null),
+            observed_mode: saved.mode || null,
+            ocr_required: saved.ocr_required ?? null,
+            rag_used: saved.rag_used ?? null,
+            sources: saved.sources || [],
+            tested_at: saved.tested_at || null,
+            latency_ms: saved.latency_ms ?? null
+        };
+    });
+    const blob = new Blob([JSON.stringify({exported_at: new Date().toISOString(), results: output}, null, 2)], {
+        type: "application/json"
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "image_ocr_test_results.json";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+document.getElementById("export-image-tests-button").addEventListener("click", exportImageTestResults);
+window.addEventListener("beforeunload", () => {
+    imageRequestController?.abort();
+    if (selectedImagePreviewUrl) URL.revokeObjectURL(selectedImagePreviewUrl);
+});
+
+
+// ==========================================
 // LOAD SAVED RESULTS ON PAGE LOAD
 // ==========================================
+
+showApplicationView(new URLSearchParams(window.location.search).get("page") || "assistant", false);

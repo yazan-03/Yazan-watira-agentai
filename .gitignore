@@ -6,3 +6,5 @@ __pycache__/
 .vscode/
 .idea/
 Problems/
+# Personal OCR sample; the reproducible fixtures use synthetic data instead.
+/test_ocr.jpg

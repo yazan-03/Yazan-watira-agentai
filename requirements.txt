@@ -1,4 +1,5 @@
 flask
+Pillow>=10.4
 python-dotenv
 openai
 azure-search-documents

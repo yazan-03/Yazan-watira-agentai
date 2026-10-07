@@ -2,7 +2,7 @@
 
 Watira AI is an Agentic Retrieval-Augmented Generation (RAG) application that answers questions from a document-based knowledge base and can perform actions through LLM tool calling.
 
-The system uses Azure AI Search for document retrieval, Azure OpenAI for embeddings, answer generation, and tool selection, Azure AI Speech for bilingual voice conversations, Flask for the backend API, and a web interface for chat interaction and RAG evaluation.
+The system uses Azure AI Search for document retrieval, Azure OpenAI for embeddings, answer generation, tool selection, and image/OCR analysis, Azure AI Speech for bilingual voice conversations, Flask for the backend API, and a web interface for chat interaction and evaluation.
 
 ## Architecture
 
@@ -82,6 +82,67 @@ Grounded Answer
 - Multi-turn voice conversation history
 - Real-time barge-in that stops the active response when the user speaks
 - Exactly eight voice-agent test scenarios with exportable actual results
+- Image understanding and conditional Arabic/English OCR
+- Image/OCR answers combined with existing RAG when needed
+- Exactly eight image-agent fixtures with saved live evaluation results
+
+## Image Understanding & OCR Agent
+
+Open **Image & OCR Agent** in the sidebar, upload a JPEG/PNG/WEBP/static GIF
+(up to 10 MB), and ask a question in Arabic or English. A vision-capable
+Azure OpenAI deployment is required. `AZURE_OPENAI_VISION_DEPLOYMENT` is
+optional; if empty, the existing `AZURE_OPENAI_DEPLOYMENT` is used.
+
+`image_service.py` owns this task's image processing. The Flask endpoints stay
+in `app.py`, the task prompts in `prompts.py`, and its eight evaluation cases
+in `image_test_cases.py`. Original uploads are processed in a unique temporary
+directory and removed after the request. Image bytes, dimensions and animation
+are checked on the server; EXIF rotation is applied before analysis.
+Normalized uploads are also capped at 10 MB. Small images remain lossless PNG;
+large payloads use JPEG compression/resizing, which can affect tiny lettering.
+
+```mermaid
+flowchart LR
+    A[Image + Arabic/English question] --> B[Validate and inspect]
+    B --> C{Is relevant text present?}
+    C -->|Yes| D[OCR: preserve original Arabic/English]
+    C -->|No| E[Visual evidence]
+    D --> F{Knowledge-base information needed?}
+    E --> F
+    F -->|Yes| G[Existing rag_search + context quality check]
+    F -->|No| H[Answer from image/OCR]
+    G --> H
+    H --> I[Check answer against evidence]
+    I --> J[Same-language answer + OCR + supporting KB sources]
+```
+
+The initial model decision uses **both the image and the question**. It reports
+`VISUAL`, `OCR`, or `BOTH`, text presence, and whether KB retrieval is needed.
+Text elsewhere in an image does not trigger OCR for a visual-only question.
+OCR is implemented with the deployed vision model, not a separate Azure OCR
+resource; the extracted text is returned separately from the answer.
+
+For KB questions, the pipeline reuses the existing `rag_search` tool and
+`check_retrieval_quality`. It accepts only sufficient context and only displays
+KB sources selected from those chunks. A separate model check rejects answers
+that cannot be supported by the available evidence. These model checks reduce
+unsupported answers; they are not a mathematical guarantee of OCR accuracy.
+Unreadable words are marked `[UNREADABLE]` and missing fields are not guessed.
+
+The eight reproducible fixtures are in `static/image_test_cases/`. Run:
+
+```powershell
+venv\Scripts\python.exe -X utf8 evaluate_image_ocr.py
+```
+
+The runner records actual OCR, answers, modes, RAG use, limitations and latency
+in `image_test_results.json`. Its checks are scenario-specific regression
+checks; inspect the answers and OCR before presenting the results. The page
+also lets you run each scenario, record a manual verdict and export results.
+
+For a short demo: run the no-text image, English invoice, Arabic invoice,
+mixed-language label, and image + KB example. Show the blurry and missing-field
+cases to explain limitations. Test-case images contain synthetic data.
 
 ## Voice RAG Agent
 
@@ -243,12 +304,13 @@ Then open:
 http://127.0.0.1:5000
 ```
 
-The web interface provides four main views:
+The web interface provides five main views:
 
 - **Document Assistant** – interact with the Agentic RAG system and inspect tool execution.
 - **RAG Evaluation** – run the TruLens evaluation and inspect RAG Triad results.
 - **Adaptive RAG Evaluation** – inspect adaptive retrieval, rewriting, reranking, multi-hop retrieval, and grounded-answer metrics.
 - **Voice RAG Agent** – run an Arabic/English voice session, test barge-in, and record the eight required live-test results.
+- **Image & OCR Agent** – upload an image, inspect conditional OCR and RAG evidence, and run the eight image test scenarios.
 
 The browser must be allowed to access the microphone. Localhost is accepted as a secure browser context; deployed versions should use HTTPS.
 
